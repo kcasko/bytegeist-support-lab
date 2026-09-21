@@ -370,3 +370,15 @@ textarea:focus {
   font-size: 0.8rem;
   white-space: nowrap;
 }
+
+.loading-message {
+  color: #9ca3af;
+}
+
+.error-message {
+  color: #fca5a5;
+  background: #1f1115;
+  border: 1px solid #7f1d1d;
+  border-radius: 8px;
+  padding: 1rem;
+}

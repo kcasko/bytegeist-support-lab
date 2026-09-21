@@ -5,6 +5,18 @@
   "title": {
     "S": "The Missing File Server"
   },
+  "ticketNumber": {
+    "S": "INC-1001"
+  },
+  "category": {
+    "S": "Windows / Networking"
+  },
+  "difficulty": {
+    "S": "Beginner"
+  },
+  "issue": {
+    "S": "Sarah can browse the internet, but she cannot access FILESERVER01 by hostname. Other employees can access FILESERVER01 normally."
+  },
   "commands": {
     "M": {
       "ipconfig": {

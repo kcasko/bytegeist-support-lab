@@ -33,6 +33,7 @@ Resources:
         AllowOrigins:
           - "*"
         AllowMethods:
+          - GET
           - POST
           - OPTIONS
         AllowHeaders:
@@ -60,6 +61,30 @@ Resources:
             ApiId: !Ref SupportLabApi
             Path: /scenarios/{id}/command
             Method: POST
+            PayloadFormatVersion: "2.0"
+
+  ListScenariosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: bytegeist-support-lab-list-scenarios
+      CodeUri: ../backend/list-scenarios/
+      Handler: index.handler
+
+      Environment:
+        Variables:
+          SCENARIO_TABLE: !Ref ScenarioTable
+
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ScenarioTable
+
+      Events:
+        ListScenarios:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SupportLabApi
+            Path: /scenarios
+            Method: GET
             PayloadFormatVersion: "2.0"
 
 Outputs:

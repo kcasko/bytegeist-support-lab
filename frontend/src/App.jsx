@@ -12,14 +12,60 @@ function App() {
   const [result, setResult] = useState(null);
   const [isRunningCommand, setIsRunningCommand] = useState(false);
 
+  const [availableScenarios, setAvailableScenarios] = useState([]);
+  const [isLoadingScenarios, setIsLoadingScenarios] = useState(true);
+  const [scenarioLoadError, setScenarioLoadError] = useState("");
+
   const terminalRef = useRef(null);
   const commandInputRef = useRef(null);
+
+  useEffect(() => {
+    async function loadScenarios() {
+      try {
+        const response = await fetch(`${API_URL}/scenarios`);
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        setAvailableScenarios(data.scenarios ?? []);
+        setScenarioLoadError("");
+      } catch (error) {
+        console.error("Unable to load scenarios:", error);
+
+        setScenarioLoadError(
+          "Unable to load training incidents. Please try again.",
+        );
+      } finally {
+        setIsLoadingScenarios(false);
+      }
+    }
+
+    loadScenarios();
+  }, []);
 
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [history]);
+
+function startScenarioFromQueue(scenarioSummary) {
+  const fullScenario = scenarios.find(
+    (scenario) => scenario.id === scenarioSummary.scenarioId,
+  );
+
+  if (!fullScenario) {
+    console.error(
+      `Local scenario data missing for ${scenarioSummary.scenarioId}`,
+    );
+    return;
+  }
+
+  startScenario(fullScenario);
+}
 
   function startScenario(scenario) {
     setActiveScenario(scenario);
@@ -189,28 +235,38 @@ Please try again.`,
               <h2>Available Incidents</h2>
             </div>
 
-            <span>{scenarios.length} available</span>
+            <span>{availableScenarios.length} available</span>
           </div>
+           {isLoadingScenarios && (
+  <p className="loading-message">Loading incidents...</p>
+)}
 
+{scenarioLoadError && (
+  <p className="error-message">{scenarioLoadError}</p>
+)}
+
+{!isLoadingScenarios &&
+  !scenarioLoadError &&
+  availableScenarios.map((scenario) => (
+    <article className="scenario-card" key={scenario.scenarioId}>
+      <div className="ticket-row">
+        <span>{scenario.ticketNumber}</span>
+        <span className="difficulty">{scenario.difficulty}</span>
+      </div>
+
+      <h3>{scenario.title}</h3>
+
+      <p>{scenario.category}</p>
+
+      <p className="scenario-description">{scenario.issue}</p>
+
+      <button onClick={() => startScenarioFromQueue(scenario)}>
+        Start Incident
+      </button>
+    </article>
+  ))}
           <div className="scenario-grid">
-            {scenarios.map((scenario) => (
-              <article className="scenario-card" key={scenario.id}>
-                <div className="ticket-row">
-                  <span>{scenario.ticketNumber}</span>
-                  <span className="difficulty">{scenario.difficulty}</span>
-                </div>
-
-                <h3>{scenario.title}</h3>
-
-                <p>{scenario.category}</p>
-
-                <p className="scenario-description">{scenario.issue}</p>
-
-                <button onClick={() => startScenario(scenario)}>
-                  Start Incident
-                </button>
-              </article>
-            ))}
+            
           </div>
         </section>
       </main>
