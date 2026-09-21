@@ -1,0 +1,136 @@
+{
+  "scenarioId": {
+    "S": "fileshare-002"
+  },
+  "title": {
+    "S": "Access Denied"
+  },
+  "ticketNumber": {
+    "S": "INC-1002"
+  },
+  "category": {
+    "S": "Windows / Active Directory"
+  },
+  "difficulty": {
+    "S": "Beginner"
+  },
+  "issue": {
+    "S": "Michael can sign in to his workstation and access the internet, but he receives an Access Denied error when opening the Accounting shared folder on FILESERVER01. Other Accounting employees can access the share normally."
+  },
+  "objective": {
+    "S": "Investigate the user's identity, group membership, connectivity, and file share access. Identify the root cause and recommend a fix."
+  },
+  "user": {
+    "M": {
+      "name": {
+        "S": "Michael Torres"
+      },
+      "username": {
+        "S": "mtorres"
+      },
+      "department": {
+        "S": "Accounting"
+      },
+      "computer": {
+        "S": "ACCT-PC-07"
+      }
+    }
+  },
+  "commands": {
+    "M": {
+      "whoami": {
+        "S": "bytegeist\\mtorres"
+      },
+      "whoami /groups": {
+        "S": "GROUP INFORMATION\n-----------------\n\nGroup Name                              Type             Attributes\n======================================= ================ =============================================\nEveryone                                Well-known group Mandatory group, Enabled by default, Enabled group\nBUILTIN\\Users                           Alias            Mandatory group, Enabled by default, Enabled group\nBYTEGEIST\\Domain Users                  Group            Mandatory group, Enabled by default, Enabled group\nBYTEGEIST\\Employees                     Group            Mandatory group, Enabled by default, Enabled group\n\nBYTEGEIST\\Accounting-Share is not present in the user's security token."
+      },
+      "ping fileserver01": {
+        "S": "Pinging FILESERVER01 [10.0.0.20] with 32 bytes of data:\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\n\nPing statistics for 10.0.0.20:\n    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)"
+      },
+      "net use": {
+        "S": "New connections will be remembered.\n\nStatus       Local     Remote                         Network\n-------------------------------------------------------------------------------\nOK                     \\\\FILESERVER01\\Public          Microsoft Windows Network\nThe command completed successfully."
+      },
+      "net use \\\\fileserver01\\accounting": {
+        "S": "System error 5 has occurred.\n\nAccess is denied."
+      },
+      "dir \\\\fileserver01\\accounting": {
+        "S": "Access is denied."
+      },
+      "ipconfig /all": {
+        "S": "Windows IP Configuration\n\n   Host Name . . . . . . . . . . . . : ACCT-PC-07\n   DHCP Enabled. . . . . . . . . . . : Yes\n   IPv4 Address. . . . . . . . . . . : 10.0.0.47\n   Default Gateway . . . . . . . . . : 10.0.0.1\n   DHCP Server . . . . . . . . . . . : 10.0.0.5\n   DNS Servers . . . . . . . . . . . : 10.0.0.10"
+      },
+      "nslookup fileserver01": {
+        "S": "Server:  DC01.bytegeist.lab\nAddress:  10.0.0.10\n\nName:    FILESERVER01.bytegeist.lab\nAddress: 10.0.0.20"
+      }
+    }
+  },
+  "expectedDiagnosis": {
+    "S": "The user's account is missing the Accounting-Share security group membership required to access the Accounting file share."
+  },
+  "expectedSolution": {
+    "S": "Add the user to the Accounting-Share security group and refresh the user's security token by signing out and back in before testing the share again."
+  },
+  "diagnosisKeywords": {
+    "L": [
+      {
+        "S": "group"
+      },
+      {
+        "S": "group membership"
+      },
+      {
+        "S": "accounting-share"
+      },
+      {
+        "S": "security group"
+      },
+      {
+        "S": "permissions"
+      },
+      {
+        "S": "missing"
+      }
+    ]
+  },
+  "solutionKeywords": {
+    "L": [
+      {
+        "S": "add"
+      },
+      {
+        "S": "group"
+      },
+      {
+        "S": "accounting-share"
+      },
+      {
+        "S": "sign out"
+      },
+      {
+        "S": "sign in"
+      },
+      {
+        "S": "security token"
+      },
+      {
+        "S": "membership"
+      }
+    ]
+  },
+  "recommendedCommands": {
+    "L": [
+      {
+        "S": "whoami /groups"
+      },
+      {
+        "S": "ping fileserver01"
+      },
+      {
+        "S": "net use \\\\fileserver01\\accounting"
+      },
+      {
+        "S": "dir \\\\fileserver01\\accounting"
+      }
+    ]
+  }
+}

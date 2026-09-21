@@ -17,7 +17,8 @@ export const handler = async (event) => {
   try {
     const scenarioId = event.pathParameters?.id;
     const body = JSON.parse(event.body || "{}");
-    const command = body.command;
+
+    const submittedCommand = body.command;
 
     if (!scenarioId) {
       return response(400, {
@@ -25,9 +26,18 @@ export const handler = async (event) => {
       });
     }
 
-    if (!command || typeof command !== "string") {
+    if (
+      !submittedCommand ||
+      typeof submittedCommand !== "string"
+    ) {
       return response(400, {
         error: "Command is required.",
+      });
+    }
+
+    if (submittedCommand.length > 500) {
+      return response(400, {
+        error: "Command is too long.",
       });
     }
 
@@ -48,28 +58,44 @@ export const handler = async (event) => {
       });
     }
 
-    const normalizedCommand = normalizeCommand(command);
+    const normalizedCommand =
+      normalizeCommand(submittedCommand);
 
-    const output =
-      scenario.commands?.[normalizedCommand] ??
-      `'${command.trim()}' is not available in this training environment.
+    const commands = scenario.commands ?? {};
 
-Try commands such as:
-ipconfig /all
-ping 8.8.8.8
-ping fileserver01
-nslookup fileserver01`;
+    const matchedCommand = Object.keys(commands).find(
+      (availableCommand) =>
+        normalizeCommand(availableCommand) ===
+        normalizedCommand,
+    );
+
+    if (matchedCommand) {
+      return response(200, {
+        output: commands[matchedCommand],
+      });
+    }
+
+    const recommendedCommands =
+      scenario.recommendedCommands ?? [];
+
+    const suggestions =
+      recommendedCommands.length > 0
+        ? recommendedCommands
+            .map((command) => `  ${command}`)
+            .join("\n")
+        : "  No suggested commands are available.";
 
     return response(200, {
-      scenarioId,
-      command: command.trim(),
-      output,
+      output: `'${submittedCommand}' is not available in this training environment.
+
+Try commands such as:
+${suggestions}`,
     });
   } catch (error) {
     console.error("RunCommand error:", error);
 
     return response(500, {
-      error: "Internal server error.",
+      error: "Unable to run command.",
     });
   }
 };
