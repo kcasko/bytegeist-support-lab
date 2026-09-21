@@ -13,6 +13,18 @@ Globals:
 
 Resources:
 
+  ScenarioTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ByteGeistSupportLabScenarios
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: scenarioId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: scenarioId
+          KeyType: HASH
+
   SupportLabApi:
     Type: AWS::Serverless::HttpApi
     Properties:
@@ -33,6 +45,14 @@ Resources:
       CodeUri: ../backend/run-command/
       Handler: index.handler
 
+      Environment:
+        Variables:
+          SCENARIO_TABLE: !Ref ScenarioTable
+
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ScenarioTable
+
       Events:
         RunCommand:
           Type: HttpApi
@@ -47,6 +67,10 @@ Outputs:
   ApiUrl:
     Description: ByteGeist Support Lab API URL
     Value: !Sub "https://${SupportLabApi}.execute-api.${AWS::Region}.amazonaws.com"
+
+  ScenarioTableName:
+    Description: DynamoDB scenario table
+    Value: !Ref ScenarioTable
 
   RunCommandFunctionArn:
     Description: Run Command Lambda ARN

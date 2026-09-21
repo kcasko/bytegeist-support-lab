@@ -1,0 +1,33 @@
+{
+  "scenarioId": {
+    "S": "dns-001"
+  },
+  "title": {
+    "S": "The Missing File Server"
+  },
+  "commands": {
+    "M": {
+      "ipconfig": {
+        "S": "Windows IP Configuration\n\nEthernet adapter Ethernet:\n\n   IPv4 Address. . . . . . . . . . . : 10.0.0.44\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 10.0.0.1"
+      },
+      "ipconfig /all": {
+        "S": "Windows IP Configuration\n\nHost Name . . . . . . . . . . . . : ACCT-PC-04\nPrimary DNS Suffix  . . . . . . . . : bytegeist.local\n\nEthernet adapter Ethernet:\n\n   DHCP Enabled. . . . . . . . . . . : Yes\n   IPv4 Address. . . . . . . . . . . : 10.0.0.44\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 10.0.0.1\n   DHCP Server . . . . . . . . . . . : 10.0.0.5\n   DNS Servers . . . . . . . . . . . : 10.0.0.53"
+      },
+      "ping 8.8.8.8": {
+        "S": "Pinging 8.8.8.8 with 32 bytes of data:\n\nReply from 8.8.8.8: bytes=32 time=18ms TTL=117\nReply from 8.8.8.8: bytes=32 time=17ms TTL=117\nReply from 8.8.8.8: bytes=32 time=19ms TTL=117\nReply from 8.8.8.8: bytes=32 time=18ms TTL=117\n\nPing statistics for 8.8.8.8:\n    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)"
+      },
+      "ping fileserver01": {
+        "S": "Ping request could not find host FILESERVER01.\nPlease check the name and try again."
+      },
+      "ping 10.0.0.20": {
+        "S": "Pinging 10.0.0.20 with 32 bytes of data:\n\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\nReply from 10.0.0.20: bytes=32 time<1ms TTL=128\n\nPing statistics for 10.0.0.20:\n    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)"
+      },
+      "nslookup fileserver01": {
+        "S": "DNS request timed out.\n    timeout was 2 seconds.\nServer:  Unknown\nAddress:  10.0.0.53\n\nDNS request timed out."
+      },
+      "nslookup google.com": {
+        "S": "DNS request timed out.\n    timeout was 2 seconds.\nServer:  Unknown\nAddress:  10.0.0.53\n\nDNS request timed out."
+      }
+    }
+  }
+}
