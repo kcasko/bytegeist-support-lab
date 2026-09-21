@@ -1,0 +1,130 @@
+{
+  "scenarioId": {
+    "S": "s3-003"
+  },
+  "title": {
+    "S": "AccessDenied in S3"
+  },
+  "ticketNumber": {
+    "S": "INC-1003"
+  },
+  "category": {
+    "S": "AWS / IAM / S3"
+  },
+  "difficulty": {
+    "S": "Intermediate"
+  },
+  "issue": {
+    "S": "A developer can authenticate to AWS and list some S3 buckets, but receives AccessDenied when trying to list objects in the bytegeist-reports bucket. Other members of the CloudOps team can access the bucket normally."
+  },
+  "objective": {
+    "S": "Investigate the AWS identity, bucket access, and IAM permissions. Identify why this user cannot list objects in the S3 bucket and recommend a fix."
+  },
+  "user": {
+    "M": {
+      "name": {
+        "S": "Jordan Lee"
+      },
+      "username": {
+        "S": "jlee"
+      },
+      "department": {
+        "S": "Development"
+      },
+      "computer": {
+        "S": "DEV-PC-12"
+      }
+    }
+  },
+  "commands": {
+    "M": {
+      "aws sts get-caller-identity": {
+        "S": "{\n    \"UserId\": \"AIDAEXAMPLEJLEE\",\n    \"Account\": \"123456789012\",\n    \"Arn\": \"arn:aws:iam::123456789012:user/jlee\"\n}"
+      },
+      "aws s3 ls": {
+        "S": "2026-09-18 14:22:03 bytegeist-assets\n2026-09-19 09:41:17 bytegeist-logs\n2026-09-20 16:08:52 bytegeist-reports"
+      },
+      "aws s3 ls s3://bytegeist-reports": {
+        "S": "An error occurred (AccessDenied) when calling the ListObjectsV2 operation: Access Denied"
+      },
+      "aws iam list-attached-user-policies --user-name jlee": {
+        "S": "{\n    \"AttachedPolicies\": [\n        {\n            \"PolicyName\": \"ByteGeistDeveloperBase\",\n            \"PolicyArn\": \"arn:aws:iam::123456789012:policy/ByteGeistDeveloperBase\"\n        }\n    ]\n}"
+      },
+      "aws iam get-policy-version --policy-arn arn:aws:iam::123456789012:policy/bytegeistdeveloperbase --version-id v3": {
+        "S": "{\n    \"PolicyVersion\": {\n        \"Document\": {\n            \"Version\": \"2012-10-17\",\n            \"Statement\": [\n                {\n                    \"Effect\": \"Allow\",\n                    \"Action\": [\n                        \"s3:ListAllMyBuckets\",\n                        \"s3:GetBucketLocation\"\n                    ],\n                    \"Resource\": \"*\"\n                },\n                {\n                    \"Effect\": \"Allow\",\n                    \"Action\": [\n                        \"s3:GetObject\"\n                    ],\n                    \"Resource\": \"arn:aws:s3:::bytegeist-reports/*\"\n                }\n            ]\n        }\n    }\n}"
+      },
+      "aws s3api get-bucket-policy --bucket bytegeist-reports": {
+        "S": "{\n    \"Policy\": \"{\\\"Version\\\":\\\"2012-10-17\\\",\\\"Statement\\\":[{\\\"Effect\\\":\\\"Allow\\\",\\\"Principal\\\":{\\\"AWS\\\":\\\"arn:aws:iam::123456789012:role/CloudOpsRole\\\"},\\\"Action\\\":[\\\"s3:ListBucket\\\",\\\"s3:GetObject\\\"],\\\"Resource\\\":[\\\"arn:aws:s3:::bytegeist-reports\\\",\\\"arn:aws:s3:::bytegeist-reports/*\\\"]}]}\"\n}"
+      }
+    }
+  },
+  "expectedDiagnosis": {
+    "S": "The user's IAM permissions allow GetObject but do not allow s3:ListBucket on the bytegeist-reports bucket, so listing objects fails with AccessDenied."
+  },
+  "expectedSolution": {
+    "S": "Grant the user or an appropriate IAM group or role permission for s3:ListBucket on arn:aws:s3:::bytegeist-reports while keeping object permissions scoped to arn:aws:s3:::bytegeist-reports/*."
+  },
+  "diagnosisKeywords": {
+    "L": [
+      {
+        "S": "listbucket"
+      },
+      {
+        "S": "s3:listbucket"
+      },
+      {
+        "S": "missing permission"
+      },
+      {
+        "S": "iam"
+      },
+      {
+        "S": "accessdenied"
+      },
+      {
+        "S": "bucket"
+      }
+    ]
+  },
+  "solutionKeywords": {
+    "L": [
+      {
+        "S": "grant"
+      },
+      {
+        "S": "s3:listbucket"
+      },
+      {
+        "S": "iam"
+      },
+      {
+        "S": "bucket"
+      },
+      {
+        "S": "arn:aws:s3:::bytegeist-reports"
+      },
+      {
+        "S": "role"
+      },
+      {
+        "S": "group"
+      }
+    ]
+  },
+  "recommendedCommands": {
+    "L": [
+      {
+        "S": "aws sts get-caller-identity"
+      },
+      {
+        "S": "aws s3 ls s3://bytegeist-reports"
+      },
+      {
+        "S": "aws iam list-attached-user-policies --user-name jlee"
+      },
+      {
+        "S": "aws iam get-policy-version --policy-arn arn:aws:iam::123456789012:policy/bytegeistdeveloperbase --version-id v3"
+      }
+    ]
+  }
+}
