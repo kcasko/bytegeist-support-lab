@@ -17,6 +17,58 @@
   "issue": {
     "S": "Sarah can browse the internet, but she cannot access FILESERVER01 by hostname. Other employees can access FILESERVER01 normally."
   },
+  "user": {
+    "M": {
+      "name": {
+        "S": "Sarah Miller"
+      },
+      "department": {
+        "S": "Accounting"
+      },
+      "computer": {
+        "S": "ACCT-PC-04"
+      },
+      "username": {
+        "S": "sarah"
+      }
+    }
+  },
+  "objective": {
+    "S": "Investigate the workstation, identify the root cause, and recommend a fix."
+  },
+  "expectedDiagnosis": {
+    "S": "The workstation is configured to use an unreachable or incorrect DNS server."
+  },
+  "expectedSolution": {
+    "S": "Correct the workstation DNS configuration or renew its DHCP configuration so it receives the proper DNS server."
+  },
+  "diagnosisKeywords": {
+    "L": [
+      { "S": "dns" },
+      { "S": "dns server" },
+      { "S": "name resolution" },
+      { "S": "10.0.0.53" }
+    ]
+  },
+  "solutionKeywords": {
+    "L": [
+      { "S": "dns" },
+      { "S": "dhcp" },
+      { "S": "renew" },
+      { "S": "correct" },
+      { "S": "change" },
+      { "S": "server" },
+      { "S": "configuration" }
+    ]
+  },
+  "recommendedCommands": {
+    "L": [
+      { "S": "ping 8.8.8.8" },
+      { "S": "ping fileserver01" },
+      { "S": "nslookup fileserver01" },
+      { "S": "ipconfig /all" }
+    ]
+  },
   "commands": {
     "M": {
       "ipconfig": {

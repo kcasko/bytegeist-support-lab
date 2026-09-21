@@ -87,6 +87,54 @@ Resources:
             Method: GET
             PayloadFormatVersion: "2.0"
 
+  GetScenarioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: bytegeist-support-lab-get-scenario
+      CodeUri: ../backend/get-scenario/
+      Handler: index.handler
+
+      Environment:
+        Variables:
+          SCENARIO_TABLE: !Ref ScenarioTable
+
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ScenarioTable
+
+      Events:
+        GetScenario:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SupportLabApi
+            Path: /scenarios/{id}
+            Method: GET
+            PayloadFormatVersion: "2.0"
+
+  SubmitScenarioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: bytegeist-support-lab-submit-scenario
+      CodeUri: ../backend/submit-scenario/
+      Handler: index.handler
+
+      Environment:
+        Variables:
+          SCENARIO_TABLE: !Ref ScenarioTable
+
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ScenarioTable
+
+      Events:
+        SubmitScenario:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SupportLabApi
+            Path: /scenarios/{id}/submit
+            Method: POST
+            PayloadFormatVersion: "2.0"
+
 Outputs:
 
   ApiUrl:
