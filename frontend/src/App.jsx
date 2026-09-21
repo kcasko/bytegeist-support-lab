@@ -13,6 +13,7 @@ function App() {
   const [isRunningCommand, setIsRunningCommand] = useState(false);
 
   const terminalRef = useRef(null);
+  const commandInputRef = useRef(null);
 
   useEffect(() => {
     if (terminalRef.current) {
@@ -97,6 +98,10 @@ Please try again.`,
       ]);
     } finally {
       setIsRunningCommand(false);
+
+      requestAnimationFrame(() => {
+        commandInputRef.current?.focus();
+      });
     }
   }
 
@@ -340,13 +345,14 @@ Please try again.`,
           <span>C:\Users\sarah&gt;</span>
 
           <input
+            ref={commandInputRef}
             autoFocus
             value={command}
             onChange={(event) => setCommand(event.target.value)}
             aria-label="Terminal command"
             autoComplete="off"
             spellCheck="false"
-            disabled={isRunningCommand}
+            readOnly={isRunningCommand}
           />
 
           {isRunningCommand && (
