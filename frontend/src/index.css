@@ -382,3 +382,8 @@ textarea:focus {
   border-radius: 8px;
   padding: 1rem;
 }
+
+.diagnosis-panel button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

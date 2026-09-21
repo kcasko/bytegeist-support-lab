@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { scenarios } from "./data/scenarios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -10,11 +9,14 @@ function App() {
   const [diagnosis, setDiagnosis] = useState("");
   const [solution, setSolution] = useState("");
   const [result, setResult] = useState(null);
+
   const [isRunningCommand, setIsRunningCommand] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [availableScenarios, setAvailableScenarios] = useState([]);
   const [isLoadingScenarios, setIsLoadingScenarios] = useState(true);
   const [scenarioLoadError, setScenarioLoadError] = useState("");
+  const [submissionMessage, setSubmissionMessage] = useState("");
 
   const terminalRef = useRef(null);
   const commandInputRef = useRef(null);
@@ -52,20 +54,32 @@ function App() {
     }
   }, [history]);
 
-function startScenarioFromQueue(scenarioSummary) {
-  const fullScenario = scenarios.find(
-    (scenario) => scenario.id === scenarioSummary.scenarioId,
-  );
+  async function startScenarioFromQueue(scenarioSummary) {
+    try {
+      setScenarioLoadError("");
 
-  if (!fullScenario) {
-    console.error(
-      `Local scenario data missing for ${scenarioSummary.scenarioId}`,
-    );
-    return;
+      const response = await fetch(
+        `${API_URL}/scenarios/${scenarioSummary.scenarioId}`,
+      );
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const scenario = await response.json();
+
+      startScenario({
+        ...scenario,
+        id: scenario.scenarioId,
+      });
+    } catch (error) {
+      console.error("Unable to load scenario:", error);
+
+      setScenarioLoadError(
+        "Unable to open this training incident. Please try again.",
+      );
+    }
   }
-
-  startScenario(fullScenario);
-}
 
   function startScenario(scenario) {
     setActiveScenario(scenario);
@@ -74,7 +88,9 @@ function startScenarioFromQueue(scenarioSummary) {
     setDiagnosis("");
     setSolution("");
     setResult(null);
+    setSubmissionMessage("");
     setIsRunningCommand(false);
+    setIsSubmitting(false);
   }
 
   function returnHome() {
@@ -84,11 +100,9 @@ function startScenarioFromQueue(scenarioSummary) {
     setDiagnosis("");
     setSolution("");
     setResult(null);
+    setSubmissionMessage("");
     setIsRunningCommand(false);
-  }
-
-  function normalizeCommand(value) {
-    return value.trim().replace(/\s+/g, " ").toLowerCase();
+    setIsSubmitting(false);
   }
 
   async function runCommand(event) {
@@ -151,67 +165,52 @@ Please try again.`,
     }
   }
 
-  function calculateScore() {
-    const normalizedDiagnosis = diagnosis.toLowerCase();
-    const normalizedSolution = solution.toLowerCase();
-
-    const diagnosisMatches = activeScenario.diagnosisKeywords.filter(
-      (keyword) => normalizedDiagnosis.includes(keyword),
-    );
-
-    const solutionMatches = activeScenario.solutionKeywords.filter((keyword) =>
-      normalizedSolution.includes(keyword),
-    );
-
-    const commandsUsed = history.map((entry) =>
-      normalizeCommand(entry.command),
-    );
-
-    const recommendedCommandsUsed =
-      activeScenario.recommendedCommands.filter((recommendedCommand) =>
-        commandsUsed.includes(recommendedCommand),
-      );
-
-    let diagnosisScore = 0;
-
-    if (diagnosisMatches.length >= 2) {
-      diagnosisScore = 50;
-    } else if (diagnosisMatches.length === 1) {
-      diagnosisScore = 35;
-    }
-
-    let solutionScore = 0;
-
-    if (solutionMatches.length >= 3) {
-      solutionScore = 30;
-    } else if (solutionMatches.length === 2) {
-      solutionScore = 20;
-    } else if (solutionMatches.length === 1) {
-      solutionScore = 10;
-    }
-
-    const troubleshootingScore = Math.min(
-      recommendedCommandsUsed.length * 5,
-      20,
-    );
-
-    return {
-      total: diagnosisScore + solutionScore + troubleshootingScore,
-      diagnosisScore,
-      solutionScore,
-      troubleshootingScore,
-      commandsUsed: recommendedCommandsUsed.length,
-    };
-  }
-
-  function submitDiagnosis(event) {
+  async function submitDiagnosis(event) {
     event.preventDefault();
 
-    if (!diagnosis.trim() || !solution.trim()) {
+    if (
+      !diagnosis.trim() ||
+      !solution.trim() ||
+      isSubmitting
+    ) {
       return;
     }
 
-    setResult(calculateScore());
+    setIsSubmitting(true);
+    setSubmissionMessage("");
+
+    try {
+      const response = await fetch(
+        `${API_URL}/scenarios/${activeScenario.id}/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            diagnosis: diagnosis.trim(),
+            solution: solution.trim(),
+            commandsUsed: history.map((entry) => entry.command),
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setResult(data);
+    } catch (error) {
+      console.error("Unable to submit incident:", error);
+
+      setSubmissionMessage(
+        "Unable to score this incident. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (!activeScenario) {
@@ -237,37 +236,46 @@ Please try again.`,
 
             <span>{availableScenarios.length} available</span>
           </div>
-           {isLoadingScenarios && (
-  <p className="loading-message">Loading incidents...</p>
-)}
 
-{scenarioLoadError && (
-  <p className="error-message">{scenarioLoadError}</p>
-)}
+          {isLoadingScenarios && (
+            <p className="loading-message">Loading incidents...</p>
+          )}
 
-{!isLoadingScenarios &&
-  !scenarioLoadError &&
-  availableScenarios.map((scenario) => (
-    <article className="scenario-card" key={scenario.scenarioId}>
-      <div className="ticket-row">
-        <span>{scenario.ticketNumber}</span>
-        <span className="difficulty">{scenario.difficulty}</span>
-      </div>
+          {scenarioLoadError && (
+            <p className="error-message">{scenarioLoadError}</p>
+          )}
 
-      <h3>{scenario.title}</h3>
+          {!isLoadingScenarios && !scenarioLoadError && (
+            <div className="scenario-grid">
+              {availableScenarios.map((scenario) => (
+                <article
+                  className="scenario-card"
+                  key={scenario.scenarioId}
+                >
+                  <div className="ticket-row">
+                    <span>{scenario.ticketNumber}</span>
+                    <span className="difficulty">
+                      {scenario.difficulty}
+                    </span>
+                  </div>
 
-      <p>{scenario.category}</p>
+                  <h3>{scenario.title}</h3>
 
-      <p className="scenario-description">{scenario.issue}</p>
+                  <p>{scenario.category}</p>
 
-      <button onClick={() => startScenarioFromQueue(scenario)}>
-        Start Incident
-      </button>
-    </article>
-  ))}
-          <div className="scenario-grid">
-            
-          </div>
+                  <p className="scenario-description">
+                    {scenario.issue}
+                  </p>
+
+                  <button
+                    onClick={() => startScenarioFromQueue(scenario)}
+                  >
+                    Start Incident
+                  </button>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
       </main>
     );
@@ -314,15 +322,19 @@ Please try again.`,
             <p>{solution}</p>
           </div>
 
-          <div className="review-section answer">
-            <h2>Expected root cause</h2>
-            <p>{activeScenario.expectedDiagnosis}</p>
-          </div>
+          {result.expectedDiagnosis && (
+            <div className="review-section answer">
+              <h2>Expected root cause</h2>
+              <p>{result.expectedDiagnosis}</p>
+            </div>
+          )}
 
-          <div className="review-section answer">
-            <h2>Recommended resolution</h2>
-            <p>{activeScenario.expectedSolution}</p>
-          </div>
+          {result.expectedSolution && (
+            <div className="review-section answer">
+              <h2>Recommended resolution</h2>
+              <p>{result.expectedSolution}</p>
+            </div>
+          )}
 
           <button onClick={() => startScenario(activeScenario)}>
             Retry Incident
@@ -341,7 +353,9 @@ Please try again.`,
       <section className="ticket-panel">
         <div className="ticket-row">
           <span>{activeScenario.ticketNumber}</span>
-          <span className="difficulty">{activeScenario.difficulty}</span>
+          <span className="difficulty">
+            {activeScenario.difficulty}
+          </span>
         </div>
 
         <h1>{activeScenario.title}</h1>
@@ -389,7 +403,8 @@ Please try again.`,
           {history.map((entry, index) => (
             <div className="terminal-entry" key={index}>
               <p className="terminal-command">
-                C:\Users\sarah&gt; {entry.command}
+                C:\Users\{activeScenario.user.username}&gt;{" "}
+                {entry.command}
               </p>
 
               <pre>{entry.output}</pre>
@@ -398,7 +413,9 @@ Please try again.`,
         </div>
 
         <form className="terminal-input-row" onSubmit={runCommand}>
-          <span>C:\Users\sarah&gt;</span>
+          <span>
+            C:\Users\{activeScenario.user.username}&gt;
+          </span>
 
           <input
             ref={commandInputRef}
@@ -421,27 +438,43 @@ Please try again.`,
         <h2>Resolve Incident</h2>
 
         <form onSubmit={submitDiagnosis}>
-          <label htmlFor="diagnosis">What is the root cause?</label>
+          <label htmlFor="diagnosis">
+            What is the root cause?
+          </label>
 
           <textarea
             id="diagnosis"
             value={diagnosis}
-            onChange={(event) => setDiagnosis(event.target.value)}
+            onChange={(event) => {
+              setDiagnosis(event.target.value);
+              setSubmissionMessage("");
+            }}
             placeholder="Describe what you believe is causing the problem..."
             required
           />
 
-          <label htmlFor="solution">How would you fix it?</label>
+          <label htmlFor="solution">
+            How would you fix it?
+          </label>
 
           <textarea
             id="solution"
             value={solution}
-            onChange={(event) => setSolution(event.target.value)}
+            onChange={(event) => {
+              setSolution(event.target.value);
+              setSubmissionMessage("");
+            }}
             placeholder="Describe the steps you would take to resolve the incident..."
             required
           />
 
-          <button type="submit">Submit Resolution</button>
+          {submissionMessage && (
+            <p className="error-message">{submissionMessage}</p>
+          )}
+
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Scoring..." : "Submit Resolution"}
+          </button>
         </form>
       </section>
     </main>
