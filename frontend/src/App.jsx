@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { scenarios } from "./data/scenarios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function App() {
   const [activeScenario, setActiveScenario] = useState(null);
   const [command, setCommand] = useState("");
@@ -8,6 +10,7 @@ function App() {
   const [diagnosis, setDiagnosis] = useState("");
   const [solution, setSolution] = useState("");
   const [result, setResult] = useState(null);
+  const [isRunningCommand, setIsRunningCommand] = useState(false);
 
   const terminalRef = useRef(null);
 
@@ -24,6 +27,7 @@ function App() {
     setDiagnosis("");
     setSolution("");
     setResult(null);
+    setIsRunningCommand(false);
   }
 
   function returnHome() {
@@ -33,40 +37,67 @@ function App() {
     setDiagnosis("");
     setSolution("");
     setResult(null);
+    setIsRunningCommand(false);
   }
 
   function normalizeCommand(value) {
     return value.trim().replace(/\s+/g, " ").toLowerCase();
   }
 
-  function runCommand(event) {
+  async function runCommand(event) {
     event.preventDefault();
 
-    const normalized = normalizeCommand(command);
+    const submittedCommand = command.trim();
 
-    if (!normalized) {
+    if (!submittedCommand || isRunningCommand) {
       return;
     }
 
-    const output =
-      activeScenario.commands[normalized] ??
-      `'${command.trim()}' is not available in this training environment.
-
-Try commands such as:
-ipconfig /all
-ping 8.8.8.8
-ping fileserver01
-nslookup fileserver01`;
-
-    setHistory((currentHistory) => [
-      ...currentHistory,
-      {
-        command: command.trim(),
-        output,
-      },
-    ]);
-
     setCommand("");
+    setIsRunningCommand(true);
+
+    try {
+      const response = await fetch(
+        `${API_URL}/scenarios/${activeScenario.id}/command`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            command: submittedCommand,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setHistory((currentHistory) => [
+        ...currentHistory,
+        {
+          command: submittedCommand,
+          output: data.output,
+        },
+      ]);
+    } catch (error) {
+      console.error("Command request failed:", error);
+
+      setHistory((currentHistory) => [
+        ...currentHistory,
+        {
+          command: submittedCommand,
+          output: `Unable to contact the ByteGeist training server.
+
+Please try again.`,
+        },
+      ]);
+    } finally {
+      setIsRunningCommand(false);
+    }
   }
 
   function calculateScore() {
@@ -281,7 +312,7 @@ nslookup fileserver01`;
 
       <section className="terminal-panel">
         <div className="terminal-header">
-          <span>ACCT-PC-04</span>
+          <span>{activeScenario.user.computer}</span>
           <span>Windows PowerShell</span>
         </div>
 
@@ -315,7 +346,12 @@ nslookup fileserver01`;
             aria-label="Terminal command"
             autoComplete="off"
             spellCheck="false"
+            disabled={isRunningCommand}
           />
+
+          {isRunningCommand && (
+            <span className="terminal-status">Running...</span>
+          )}
         </form>
       </section>
 

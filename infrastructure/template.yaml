@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: ByteGeist Support Lab backend
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures:
+      - x86_64
+    Timeout: 10
+    MemorySize: 128
+
+Resources:
+
+  SupportLabApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+
+  RunCommandFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: bytegeist-support-lab-run-command
+      CodeUri: ../backend/run-command/
+      Handler: index.handler
+
+      Events:
+        RunCommand:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SupportLabApi
+            Path: /scenarios/{id}/command
+            Method: POST
+            PayloadFormatVersion: "2.0"
+
+Outputs:
+
+  ApiUrl:
+    Description: ByteGeist Support Lab API URL
+    Value: !Sub "https://${SupportLabApi}.execute-api.${AWS::Region}.amazonaws.com"
+
+  RunCommandFunctionArn:
+    Description: Run Command Lambda ARN
+    Value: !GetAtt RunCommandFunction.Arn
