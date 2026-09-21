@@ -190,20 +190,33 @@ Please try again.`,
           body: JSON.stringify({
             diagnosis: diagnosis.trim(),
             solution: solution.trim(),
-            commandsUsed: history.map((entry) => entry.command),
+
+            commandsUsed: history.map(
+              (entry) => entry.command,
+            ),
+
+            commandHistory: history.map((entry) => ({
+              command: entry.command,
+              output: entry.output,
+            })),
           }),
         },
       );
 
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error(
+          `Request failed with status ${response.status}`,
+        );
       }
 
       const data = await response.json();
 
       setResult(data);
     } catch (error) {
-      console.error("Unable to submit incident:", error);
+      console.error(
+        "Unable to submit incident:",
+        error,
+      );
 
       setSubmissionMessage(
         "Unable to score this incident. Please try again.",
@@ -254,6 +267,7 @@ Please try again.`,
                 >
                   <div className="ticket-row">
                     <span>{scenario.ticketNumber}</span>
+
                     <span className="difficulty">
                       {scenario.difficulty}
                     </span>
@@ -268,7 +282,9 @@ Please try again.`,
                   </p>
 
                   <button
-                    onClick={() => startScenarioFromQueue(scenario)}
+                    onClick={() =>
+                      startScenarioFromQueue(scenario)
+                    }
                   >
                     Start Incident
                   </button>
@@ -284,31 +300,44 @@ Please try again.`,
   if (result) {
     return (
       <main className="app-shell">
-        <button className="text-button" onClick={returnHome}>
+        <button
+          className="text-button"
+          onClick={returnHome}
+        >
           ← Incident Queue
         </button>
 
         <section className="results-card">
-          <p className="eyebrow">{activeScenario.ticketNumber}</p>
+          <p className="eyebrow">
+            {activeScenario.ticketNumber}
+          </p>
 
           <h1>Incident Review</h1>
 
-          <div className="score">{result.total}/100</div>
+          <div className="score">
+            {result.total}/100
+          </div>
 
           <div className="score-breakdown">
             <div>
               <span>Diagnosis</span>
-              <strong>{result.diagnosisScore}/50</strong>
+              <strong>
+                {result.diagnosisScore}/50
+              </strong>
             </div>
 
             <div>
               <span>Resolution</span>
-              <strong>{result.solutionScore}/30</strong>
+              <strong>
+                {result.solutionScore}/30
+              </strong>
             </div>
 
             <div>
               <span>Troubleshooting</span>
-              <strong>{result.troubleshootingScore}/20</strong>
+              <strong>
+                {result.troubleshootingScore}/20
+              </strong>
             </div>
           </div>
 
@@ -336,7 +365,21 @@ Please try again.`,
             </div>
           )}
 
-          <button onClick={() => startScenario(activeScenario)}>
+          {result.feedback && (
+            <div className="review-section feedback">
+              <h2>AI Coaching</h2>
+
+              <p className="feedback-text">
+                {result.feedback}
+              </p>
+            </div>
+          )}
+
+          <button
+            onClick={() =>
+              startScenario(activeScenario)
+            }
+          >
             Retry Incident
           </button>
         </section>
@@ -346,13 +389,19 @@ Please try again.`,
 
   return (
     <main className="app-shell">
-      <button className="text-button" onClick={returnHome}>
+      <button
+        className="text-button"
+        onClick={returnHome}
+      >
         ← Incident Queue
       </button>
 
       <section className="ticket-panel">
         <div className="ticket-row">
-          <span>{activeScenario.ticketNumber}</span>
+          <span>
+            {activeScenario.ticketNumber}
+          </span>
+
           <span className="difficulty">
             {activeScenario.difficulty}
           </span>
@@ -363,17 +412,23 @@ Please try again.`,
         <div className="ticket-details">
           <div>
             <span>User</span>
-            <strong>{activeScenario.user.name}</strong>
+            <strong>
+              {activeScenario.user.name}
+            </strong>
           </div>
 
           <div>
             <span>Department</span>
-            <strong>{activeScenario.user.department}</strong>
+            <strong>
+              {activeScenario.user.department}
+            </strong>
           </div>
 
           <div>
             <span>Computer</span>
-            <strong>{activeScenario.user.computer}</strong>
+            <strong>
+              {activeScenario.user.computer}
+            </strong>
           </div>
         </div>
 
@@ -382,16 +437,24 @@ Please try again.`,
           <p>{activeScenario.issue}</p>
         </div>
 
-        <p className="objective">{activeScenario.objective}</p>
+        <p className="objective">
+          {activeScenario.objective}
+        </p>
       </section>
 
       <section className="terminal-panel">
         <div className="terminal-header">
-          <span>{activeScenario.user.computer}</span>
+          <span>
+            {activeScenario.user.computer}
+          </span>
+
           <span>Windows PowerShell</span>
         </div>
 
-        <div className="terminal-output" ref={terminalRef}>
+        <div
+          className="terminal-output"
+          ref={terminalRef}
+        >
           <div className="terminal-entry">
             <p>
               ByteGeist Support Lab Terminal
@@ -401,9 +464,14 @@ Please try again.`,
           </div>
 
           {history.map((entry, index) => (
-            <div className="terminal-entry" key={index}>
+            <div
+              className="terminal-entry"
+              key={index}
+            >
               <p className="terminal-command">
-                C:\Users\{activeScenario.user.username}&gt;{" "}
+                C:\Users\
+                {activeScenario.user.username}
+                &gt;{" "}
                 {entry.command}
               </p>
 
@@ -412,16 +480,23 @@ Please try again.`,
           ))}
         </div>
 
-        <form className="terminal-input-row" onSubmit={runCommand}>
+        <form
+          className="terminal-input-row"
+          onSubmit={runCommand}
+        >
           <span>
-            C:\Users\{activeScenario.user.username}&gt;
+            C:\Users\
+            {activeScenario.user.username}
+            &gt;
           </span>
 
           <input
             ref={commandInputRef}
             autoFocus
             value={command}
-            onChange={(event) => setCommand(event.target.value)}
+            onChange={(event) =>
+              setCommand(event.target.value)
+            }
             aria-label="Terminal command"
             autoComplete="off"
             spellCheck="false"
@@ -429,7 +504,9 @@ Please try again.`,
           />
 
           {isRunningCommand && (
-            <span className="terminal-status">Running...</span>
+            <span className="terminal-status">
+              Running...
+            </span>
           )}
         </form>
       </section>
@@ -469,11 +546,18 @@ Please try again.`,
           />
 
           {submissionMessage && (
-            <p className="error-message">{submissionMessage}</p>
+            <p className="error-message">
+              {submissionMessage}
+            </p>
           )}
 
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Scoring..." : "Submit Resolution"}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? "Scoring..."
+              : "Submit Resolution"}
           </button>
         </form>
       </section>

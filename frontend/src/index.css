@@ -387,3 +387,17 @@ textarea:focus {
   opacity: 0.65;
   cursor: not-allowed;
 }
+
+.review-section.feedback {
+  background: #0f172a;
+  border: 1px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+
+.feedback-text {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  color: #dbeafe;
+}

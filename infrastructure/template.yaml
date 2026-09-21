@@ -117,6 +117,7 @@ Resources:
       FunctionName: bytegeist-support-lab-submit-scenario
       CodeUri: ../backend/submit-scenario/
       Handler: index.handler
+      Timeout: 20
 
       Environment:
         Variables:
@@ -125,6 +126,13 @@ Resources:
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ScenarioTable
+
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource:
+                - !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/amazon.nova-micro-v1:0"
 
       Events:
         SubmitScenario:
