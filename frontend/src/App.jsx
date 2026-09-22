@@ -443,6 +443,12 @@ function App() {
 
             output:
               data.output,
+
+            supported:
+              data.supported,
+
+            kind:
+              data.kind,
           },
         ],
       );
@@ -484,6 +490,7 @@ Please try again.`,
     action,
     message = "",
     displayMessage = "",
+    selectedEvidence = null,
   ) {
     if (
       !sessionId ||
@@ -523,6 +530,7 @@ Please try again.`,
             sessionId,
             action,
             message,
+            selectedEvidence,
           }),
         },
       );
@@ -630,6 +638,26 @@ Please try again.`,
     );
   }
 
+  async function explainOutput(entry) {
+    if (!entry) {
+      setCoachError(
+        "Select a terminal command to explain.",
+      );
+
+      return;
+    }
+
+    await requestCoach(
+      "explain",
+      "",
+      `Explain this output: ${entry.command}`,
+      {
+        command: entry.command,
+        output: entry.output,
+      },
+    );
+  }
+
   async function explainLastOutput() {
     if (history.length === 0) {
       setCoachError(
@@ -639,10 +667,8 @@ Please try again.`,
       return;
     }
 
-    await requestCoach(
-      "explain",
-      "",
-      "Explain my last terminal output.",
+    await explainOutput(
+      history[history.length - 1],
     );
   }
 
@@ -1157,6 +1183,20 @@ Please try again.`,
                 <pre>
                   {entry.output}
                 </pre>
+
+                <button
+                  type="button"
+                  className="terminal-explain-button"
+                  onClick={() =>
+                    explainOutput(entry)
+                  }
+                  disabled={
+                    !sessionId ||
+                    isCoachLoading
+                  }
+                >
+                  Explain This Output
+                </button>
               </div>
             ),
           )}

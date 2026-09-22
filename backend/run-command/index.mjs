@@ -24,12 +24,21 @@ async function recordCommand({
   scenarioId,
   command,
   output,
+  supported,
+  kind,
 }) {
   if (!sessionId) {
-    return;
+    return null;
   }
 
   const now = new Date();
+  const entry = {
+    command,
+    output,
+    supported,
+    kind,
+    timestamp: now.toISOString(),
+  };
 
   const expiresAt =
     Math.floor(now.getTime() / 1000) + 86400;
@@ -59,13 +68,7 @@ async function recordCommand({
       ExpressionAttributeValues: {
         ":empty": [],
 
-        ":entries": [
-          {
-            command,
-            output,
-            timestamp: now.toISOString(),
-          },
-        ],
+        ":entries": [entry],
 
         ":updatedAt": now.toISOString(),
         ":expiresAt": expiresAt,
@@ -73,6 +76,8 @@ async function recordCommand({
       },
     }),
   );
+
+  return entry;
 }
 
 export const handler = async (event) => {
@@ -131,8 +136,11 @@ export const handler = async (event) => {
       scenario.recommendedCommands ?? [];
 
     let output;
+    let supported = false;
+    let kind = "unsupported";
 
     if (normalizedCommand === "help") {
+      kind = "help";
       const suggestions =
         recommendedCommands.length > 0
           ? recommendedCommands
@@ -157,6 +165,8 @@ ${suggestions}`;
 
       if (matchedCommand) {
         output = commands[matchedCommand];
+        supported = true;
+        kind = "simulated";
       } else {
         output = `'${submittedCommand}' is not available in this training environment.
 
@@ -170,6 +180,8 @@ Type "help" to view available troubleshooting commands.`;
         scenarioId,
         command: submittedCommand,
         output,
+        supported,
+        kind,
       });
     } catch (error) {
       console.error(
@@ -192,6 +204,8 @@ Type "help" to view available troubleshooting commands.`;
 
     return response(200, {
       output,
+      supported,
+      kind,
     });
   } catch (error) {
     console.error(
