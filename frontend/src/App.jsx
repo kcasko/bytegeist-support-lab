@@ -224,6 +224,42 @@ const IconRefresh = () => (
     size={16}
   />
 );
+const IconClipboard = () => (
+  <Icon
+    path={
+      <>
+        <rect x="8" y="3" width="8" height="4" rx="1" />
+        <path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+        <path d="M9 12h6M9 16h4" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconBot = () => (
+  <Icon
+    path={
+      <>
+        <rect x="4" y="8" width="16" height="12" rx="2" />
+        <path d="M12 4v4" />
+        <circle cx="9" cy="14" r="1" fill="currentColor" />
+        <circle cx="15" cy="14" r="1" fill="currentColor" />
+      </>
+    }
+    size={18}
+  />
+);
+const IconUserSm = () => (
+  <Icon
+    path={
+      <>
+        <circle cx="12" cy="8" r="3.5" />
+        <path d="M5 20a7 7 0 0 1 14 0" />
+      </>
+    }
+    size={16}
+  />
+);
 
 /* ---------- helpers ---------- */
 function initials(name) {
@@ -362,6 +398,7 @@ function App() {
 
   async function startScenario(scenario) {
     setActiveScenario(scenario);
+    window.scrollTo({ top: 0, behavior: "auto" });
     setCommand("");
     setHistory([]);
     setDiagnosis("");
@@ -390,7 +427,7 @@ function App() {
       setSessionId(session.sessionId);
       setHintLevel(session.hintLevel ?? 1);
       requestAnimationFrame(() => {
-        commandInputRef.current?.focus();
+        commandInputRef.current?.focus({ preventScroll: true });
       });
     } catch (error) {
       console.error("Unable to start tutor session:", error);
@@ -422,6 +459,7 @@ function App() {
 
   function returnHome() {
     setActiveScenario(null);
+    window.scrollTo({ top: 0, behavior: "auto" });
     setCommand("");
     setHistory([]);
     setDiagnosis("");
@@ -495,7 +533,7 @@ function App() {
     } finally {
       setIsRunningCommand(false);
       requestAnimationFrame(() => {
-        commandInputRef.current?.focus();
+        commandInputRef.current?.focus({ preventScroll: true });
       });
     }
   }
@@ -645,6 +683,7 @@ function App() {
       }
       const data = await response.json();
       setResult(data);
+      window.scrollTo({ top: 0, behavior: "auto" });
     } catch (error) {
       console.error("Unable to submit incident:", error);
       setSubmissionMessage(
@@ -698,6 +737,7 @@ function App() {
             </p>
           </section>
 
+          <div className="queue-section">
           <div className="queue-heading">
             <h2>Available incidents</h2>
             <span className="count">
@@ -750,6 +790,7 @@ function App() {
               ))}
             </div>
           )}
+          </div>
         </main>
       </div>
     );
@@ -1024,61 +1065,56 @@ function App() {
                 </p>
               </div>
 
-              {history.map((entry, index) => {
-                const kindClass =
-                  entry.kind === "help"
-                    ? "help"
-                    : entry.supported === false
-                      ? "unsupported"
-                      : entry.supported === true
-                        ? "supported"
-                        : "";
-                return (
-                  <div className="term-entry" key={index}>
-                    <div className="term-prompt">
-                      <span className="prompt-glyph">
-                        C:\Users\{activeScenario.user.username}&gt;
-                      </span>
-                      <span className="cmd">{entry.command}</span>
-                      {kindClass && (
-                        <span
-                          className={`kind-dot ${kindClass}`}
-                          title={
-                            kindClass === "supported"
-                              ? "Simulator supported"
-                              : kindClass === "unsupported"
-                                ? "Not simulated"
-                                : "Help output"
-                          }
-                        />
-                      )}
+                {history.map((entry, index) => {
+                  const kindClass =
+                    entry.kind === "help"
+                      ? "help"
+                      : entry.supported === false
+                        ? "unsupported"
+                        : entry.supported === true
+                          ? "supported"
+                          : "";
+                  return (
+                    <div className="term-entry" key={index}>
+                      <div className="term-prompt">
+                        <span className="prompt-glyph">&gt;</span>
+                        <span className="cmd">{entry.command}</span>
+                        {kindClass && (
+                          <span
+                            className={`kind-dot ${kindClass}`}
+                            title={
+                              kindClass === "supported"
+                                ? "Simulator supported"
+                                : kindClass === "unsupported"
+                                  ? "Not simulated"
+                                  : "Help output"
+                            }
+                          />
+                        )}
+                      </div>
+                      <pre className="term-output">{entry.output}</pre>
+                      <div className="term-actions">
+                        <button
+                          type="button"
+                          className="btn btn-ghost btn-sm"
+                          onClick={() => explainOutput(entry)}
+                          disabled={!sessionId || isCoachLoading}
+                        >
+                          <IconInfo /> Explain this output
+                        </button>
+                      </div>
                     </div>
-                    <pre className="term-output">{entry.output}</pre>
-                    <div className="term-actions">
-                      <button
-                        type="button"
-                        className="btn btn-ghost btn-sm"
-                        onClick={() => explainOutput(entry)}
-                        disabled={!sessionId || isCoachLoading}
-                      >
-                        <IconInfo /> Explain this output
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
 
             <form
               className="terminal-input-row"
               onSubmit={runCommand}
             >
-              <span className="prompt-glyph">
-                C:\Users\{activeScenario.user.username}&gt;
-              </span>
+              <span className="prompt-glyph">&gt;</span>
               <input
                 ref={commandInputRef}
-                autoFocus
                 value={command}
                 onChange={(event) => setCommand(event.target.value)}
                 aria-label="Terminal command"
@@ -1136,8 +1172,9 @@ function App() {
                   >
                     <div
                       className={`msg-avatar ${entry.role === "assistant" ? "assistant" : "user"}`}
+                      aria-hidden="true"
                     >
-                      {entry.role === "assistant" ? "AI" : "YOU"}
+                      {entry.role === "assistant" ? <IconBot /> : <IconUserSm />}
                     </div>
                     <div className="msg-bubble">
                       <div className="msg-role">
@@ -1157,11 +1194,13 @@ function App() {
 
                 {isCoachLoading && (
                   <div className="msg assistant">
-                    <div className="msg-avatar assistant">AI</div>
+                    <div className="msg-avatar assistant" aria-hidden="true">
+                      <IconBot />
+                    </div>
                     <div className="msg-bubble">
                       <div className="msg-role">AI Coach</div>
-                      <p className="msg-text">
-                        Thinking about the evidence…
+                      <p className="msg-text typing">
+                        <span></span><span></span><span></span>
                       </p>
                     </div>
                   </div>
@@ -1305,8 +1344,8 @@ function App() {
         <section className="card diagnose-card">
           <div className="card-header">
             <div className="card-title">
-              <div className="icon-chip green">
-                <IconCheck />
+              <div className="icon-chip blue">
+                <IconClipboard />
               </div>
               <div>
                 <h2>Diagnose + Resolve</h2>

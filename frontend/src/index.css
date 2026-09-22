@@ -260,6 +260,8 @@ a:hover { color: var(--cyan); }
 
 .home-hero {
   padding: 2.25rem 0 1.75rem;
+  max-width: 1120px;
+  margin: 0 auto;
 }
 .home-hero .eyebrow {
   color: var(--brand-hi);
@@ -296,9 +298,14 @@ a:hover { color: var(--cyan); }
   font-family: var(--font-mono);
 }
 
+.queue-section {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
 .scenario-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
 }
 
@@ -650,10 +657,12 @@ a:hover { color: var(--cyan); }
   padding: 0.85rem 1rem;
   background: var(--bg-inset);
   font-family: var(--font-mono);
+  border-top: 1px solid var(--border);
 }
 .terminal-input-row .prompt-glyph {
   color: var(--brand-hi);
-  font-size: 0.86rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   flex-shrink: 0;
 }
 .terminal-input-row input {
@@ -1096,6 +1105,155 @@ a:hover { color: var(--cyan); }
 .coach-history::-webkit-scrollbar-thumb {
   background: var(--border-strong);
   border-radius: 999px;
+}
+
+/* ---------------------------------- Polish: motion, focus, refinement */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes ring-pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.scenario-card { animation: fade-up 0.35s ease-out both; }
+.scenario-card:nth-child(2) { animation-delay: 0.05s; }
+.scenario-card:nth-child(3) { animation-delay: 0.1s; }
+.scenario-card:nth-child(4) { animation-delay: 0.15s; }
+
+.workspace .card,
+.diagnose-card,
+.results-wrap .card { animation: fade-up 0.35s ease-out both; }
+
+.score-ring { animation: ring-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.msg { animation: fade-up 0.25s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scenario-card, .workspace .card, .diagnose-card,
+  .results-wrap .card, .score-ring, .msg { animation: none; }
+}
+
+/* Primary button subtle glow */
+.btn-primary {
+  box-shadow: 0 4px 14px -6px rgba(37, 99, 235, 0.55);
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.7);
+}
+
+/* Consistent focus rings */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--brand-hi);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22);
+}
+
+/* Typing indicator */
+.msg-text.typing {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  min-height: 1.25rem;
+}
+.msg-text.typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-mid);
+  animation: typing-bounce 1s infinite ease-in-out;
+}
+.msg-text.typing span:nth-child(2) { animation-delay: 0.15s; }
+.msg-text.typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30%           { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Kind dot glow */
+.kind-dot.supported   { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15); }
+.kind-dot.unsupported { box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15); }
+.kind-dot.help        { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
+
+/* Coach message hover */
+.msg.assistant .msg-bubble { transition: border-color 0.15s ease; }
+.msg.assistant:hover .msg-bubble { border-color: rgba(59, 130, 246, 0.4); }
+
+/* Back link icon shift */
+.back-link { transition: color 0.15s ease, gap 0.15s ease; }
+.back-link:hover { gap: 0.55rem; }
+
+/* Chip hover */
+.chip { transition: background 0.15s ease, border-color 0.15s ease; }
+.chip:hover { background: var(--bg-card); border-color: var(--brand-hi); }
+
+/* Learning card left accent stripe */
+.learning-card {
+  position: relative;
+  overflow: hidden;
+}
+.learning-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: currentColor;
+  opacity: 0.4;
+}
+.learning-card.concept::before { color: #60a5fa; }
+.learning-card.next::before    { color: #fbbf24; }
+.learning-card.help::before    { color: #7dd3fc; }
+.learning-card.miscon::before  { color: var(--danger); }
+
+/* Scenario ticket-id monospace weight */
+.ticket-id { font-weight: 500; }
+
+/* Terminal empty state */
+.terminal-output:empty::before,
+.terminal-output:has(.terminal-intro:only-child) .terminal-intro::after {
+  content: "";
+}
+
+/* Coach empty state icon */
+.coach-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.25rem 1rem;
+}
+.coach-empty::before {
+  content: "";
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.25), transparent 70%),
+    var(--bg-inset);
+  border: 1px solid var(--border-blue);
+  margin-bottom: 0.35rem;
+}
+
+/* Card header hover on interactive coach header */
+.card-title h2 { letter-spacing: -0.005em; }
+
+/* Objective callout tighter */
+.objective-block { border-radius: 12px; }
+
+/* Score cell hover */
+.score-cell { transition: border-color 0.15s ease, background 0.15s ease; }
+.score-cell:hover { border-color: var(--border-blue); background: var(--bg-card-2); }
+
+/* Diagnose actions right-align hint on desktop */
+@media (min-width: 780px) {
+  .diagnose-actions .status-inline { margin-left: auto; }
 }
 
 /* ---------------------------------- Small screens */
