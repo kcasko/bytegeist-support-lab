@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { BrandMark, HeroArt, CoachMascot } from "./Art.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -276,6 +277,8 @@ function App() {
   const [activeScenario, setActiveScenario] = useState(null);
 
   const [command, setCommand] = useState("");
+  const [commandHistoryStack, setCommandHistoryStack] = useState([]);
+  const [commandHistoryIdx, setCommandHistoryIdx] = useState(-1);
   const [history, setHistory] = useState([]);
 
   const [diagnosis, setDiagnosis] = useState("");
@@ -489,6 +492,12 @@ function App() {
     if (!submittedCommand || isRunningCommand || !sessionId) return;
 
     setCommand("");
+    setCommandHistoryStack((prev) => {
+      // avoid consecutive duplicates
+      if (prev[prev.length - 1] === submittedCommand) return prev;
+      return [...prev, submittedCommand].slice(-50);
+    });
+    setCommandHistoryIdx(-1);
     setIsRunningCommand(true);
     try {
       const response = await fetch(
@@ -697,10 +706,11 @@ function App() {
   /* --------------------------------- HEADER */
   const AppHeader = () => (
     <header className="app-header">
+      <a className="skip-link" href="#main">Skip to main content</a>
       <div className="app-header-inner">
         <div className="brand">
           <div className="brand-mark">
-            <IconBrand />
+            <BrandMark size={36} />
           </div>
           <div className="brand-text">
             <div className="brand-name">ByteGeist Support Lab</div>
@@ -726,37 +736,44 @@ function App() {
     return (
       <div className="app">
         <AppHeader />
-        <main className="app-main">
-          <section className="home-hero">
-            <div className="hero-bg" aria-hidden="true">
-              <div className="hero-grid" />
-              <div className="hero-glow" />
+        <main className="app-main" id="main" tabIndex={-1}>
+          <section className="ops-header">
+            <div className="ops-header-main">
+              <p className="ops-eyebrow">
+                <span className="ops-tag">ops</span>
+                <span className="ops-sep">/</span>
+                <span>incidents</span>
+                <span className="ops-sep">/</span>
+                <span className="ops-current">queue</span>
+              </p>
+              <h1>Incident queue</h1>
+              <p className="ops-lede">
+                Simulated support tickets. Investigate with the console,
+                diagnose the root cause, get graded. Coach teaches, code grades.
+              </p>
+              <dl className="ops-stats">
+                <div>
+                  <dt>Open</dt>
+                  <dd>
+                    <span className="mono">{String(availableScenarios.length).padStart(2, "0")}</span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Region</dt>
+                  <dd><span className="mono">us-east-1</span></dd>
+                </div>
+                <div>
+                  <dt>Tutor</dt>
+                  <dd>
+                    <span className="tutor-online">
+                      <span className="tutor-led" /> online
+                    </span>
+                  </dd>
+                </div>
+              </dl>
             </div>
-            <p className="eyebrow"><span className="eyebrow-dot" /> TRAINING QUEUE</p>
-            <h1>
-              Support Lab<span className="hero-accent">.</span>
-            </h1>
-            <p>
-              Practice real-world IT troubleshooting by investigating
-              simulated support incidents with an AI coach that teaches
-              instead of solving for you.
-            </p>
-            <div className="hero-chips">
-              <span className="hero-chip">
-                <span className="hc-dot green" /> {availableScenarios.length} Active Incidents
-              </span>
-              <span className="hero-chip">
-                <span className="hc-dot blue" /> AI Tutor Enabled
-              </span>
-              <span className="hero-chip">
-                <span className="hc-dot amber" /> AWS + Bedrock
-              </span>
-              <span className="hero-chip">
-                <span className="hc-dot purple" /> Adaptive Coaching
-              </span>
-              <span className="hero-chip">
-                <span className="hc-dot cyan" /> Deterministic Scoring
-              </span>
+            <div className="ops-art">
+              <HeroArt />
             </div>
           </section>
 
@@ -783,11 +800,8 @@ function App() {
                   data-cat={scenario.category}
                   key={scenario.scenarioId}
                 >
-                  <span className="scenario-accent" aria-hidden="true" />
-                  <div className="scenario-top">
-                    <span className="ticket-id">
-                      {scenario.ticketNumber}
-                    </span>
+                  <div className="scenario-anchor">
+                    <span className="scenario-id">{scenario.ticketNumber}</span>
                     <span
                       className="badge badge-difficulty"
                       data-level={scenario.difficulty}
@@ -796,21 +810,21 @@ function App() {
                     </span>
                   </div>
                   <h3>{scenario.title}</h3>
-                  <div className="scenario-meta">
+                  <p className="scenario-desc">{scenario.issue}</p>
+                  <div className="scenario-foot">
                     <span
-                      className="badge badge-cat"
+                      className="scenario-cat"
                       data-cat={scenario.category}
                     >
                       {scenario.category}
                     </span>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => startScenarioFromQueue(scenario)}
+                    >
+                      Open →
+                    </button>
                   </div>
-                  <p className="scenario-desc">{scenario.issue}</p>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => startScenarioFromQueue(scenario)}
-                  >
-                    Start Incident
-                  </button>
                 </article>
               ))}
             </div>
@@ -832,7 +846,7 @@ function App() {
     return (
       <div className="app">
         <AppHeader />
-        <main className="app-main">
+        <main className="app-main" id="main" tabIndex={-1}>
           <button className="back-link" onClick={returnHome}>
             <IconArrowLeft /> Incident queue
           </button>
@@ -947,7 +961,7 @@ function App() {
   return (
     <div className="app">
       <AppHeader />
-      <main className="app-main">
+      <main className="app-main" id="main" tabIndex={-1}>
         <button className="back-link" onClick={returnHome}>
           <IconArrowLeft /> Incident queue
         </button>
@@ -960,89 +974,55 @@ function App() {
         </p>
 
         {/* -------- Incident summary -------- */}
-        <section className="card">
+        <section className="card incident-banner">
           <div className="incident-summary">
-            <div className="incident-top">
-              <div className="icon-chip blue">
-                <IconTicket />
-              </div>
+            <div className="incident-main">
               <div className="incident-heading">
                 <span className="ticket-id">
                   {activeScenario.ticketNumber}
                 </span>
-                <h1>{activeScenario.title}</h1>
-                <div className="incident-badges">
+                <span
+                  className="badge badge-difficulty"
+                  data-level={activeScenario.difficulty}
+                >
+                  {activeScenario.difficulty}
+                </span>
+                {activeScenario.category && (
                   <span
-                    className="badge badge-difficulty"
-                    data-level={activeScenario.difficulty}
+                    className="badge badge-cat"
+                    data-cat={activeScenario.category}
                   >
-                    {activeScenario.difficulty}
+                    {activeScenario.category}
                   </span>
-                  {activeScenario.category && (
-                    <span
-                      className="badge badge-cat"
-                      data-cat={activeScenario.category}
-                    >
-                      {activeScenario.category}
-                    </span>
-                  )}
-                </div>
+                )}
               </div>
-            </div>
-
-            <div className="incident-meta-grid">
-              <div className="meta-item">
-                <div className="icon-chip slate">
-                  <IconUser />
-                </div>
-                <div className="meta-body">
-                  <span className="meta-label">User</span>
-                  <span className="meta-value">
-                    {activeScenario.user.name}
-                  </span>
-                </div>
-              </div>
-              <div className="meta-item">
-                <div className="icon-chip slate">
-                  <IconBuilding />
-                </div>
-                <div className="meta-body">
-                  <span className="meta-label">Department</span>
-                  <span className="meta-value">
-                    {activeScenario.user.department}
-                  </span>
-                </div>
-              </div>
-              <div className="meta-item">
-                <div className="icon-chip slate">
-                  <IconMonitor />
-                </div>
-                <div className="meta-body">
-                  <span className="meta-label">Workstation</span>
-                  <span className="meta-value">
-                    {activeScenario.user.computer}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="incident-issue">
-              <div className="issue-block">
-                <span className="meta-label">Reported issue</span>
-                <p>{activeScenario.issue}</p>
-              </div>
+              <h1>{activeScenario.title}</h1>
+              <p className="incident-issue-line">
+                <span className="il-label">Issue</span>
+                {activeScenario.issue}
+              </p>
               {activeScenario.objective && (
-                <div className="objective-block">
-                  <div className="icon-chip amber">
-                    <IconTarget />
-                  </div>
-                  <div>
-                    <span className="meta-label">Objective</span>
-                    <p>{activeScenario.objective}</p>
-                  </div>
-                </div>
+                <p className="incident-objective-line">
+                  <span className="il-label amber">Objective</span>
+                  {activeScenario.objective}
+                </p>
               )}
             </div>
+
+            <dl className="incident-meta-inline">
+              <div>
+                <dt>User</dt>
+                <dd>{activeScenario.user.name}</dd>
+              </div>
+              <div>
+                <dt>Dept</dt>
+                <dd>{activeScenario.user.department}</dd>
+              </div>
+              <div>
+                <dt>Host</dt>
+                <dd><span className="mono">{activeScenario.user.computer}</span></dd>
+              </div>
+            </dl>
 
             {isStartingSession && (
               <p className="loading-message" style={{ marginTop: "1rem" }}>
@@ -1069,20 +1049,13 @@ function App() {
           {/* Terminal */}
           <section className="card terminal-panel">
             <div className="card-header terminal-header">
-              <div className="tty-lights" aria-hidden="true">
-                <span className="tty-dot red" />
-                <span className="tty-dot amber" />
-                <span className="tty-dot green" />
-              </div>
               <div className="card-title">
                 <div className="icon-chip blue">
                   <IconTerminal />
                 </div>
                 <div>
                   <h2>{activeScenario.user.computer}</h2>
-                  <span className="sub">
-                    Windows PowerShell / AWS CLI
-                  </span>
+                  <span className="sub">Windows PowerShell / AWS CLI</span>
                 </div>
               </div>
               <div className="status-inline">
@@ -1090,7 +1063,15 @@ function App() {
               </div>
             </div>
 
-            <div className="terminal-output" ref={terminalRef}>
+            <div
+              className="terminal-output"
+              ref={terminalRef}
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions"
+              aria-busy={isRunningCommand}
+              aria-label="Terminal output history"
+            >
               <div className="terminal-intro">
                 <p>
                   ByteGeist Support Lab Terminal
@@ -1113,7 +1094,10 @@ function App() {
                   return (
                     <div className="term-entry" key={index}>
                       <div className="term-prompt">
-                        <span className="prompt-glyph">&gt;</span>
+                        <span className="term-idx">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="prompt-glyph">$</span>
                         <span className="cmd">{entry.command}</span>
                         {kindClass && (
                           <span
@@ -1148,18 +1132,46 @@ function App() {
               className="terminal-input-row"
               onSubmit={runCommand}
             >
-              <span className="prompt-glyph">&gt;</span>
+              <span className="prompt-glyph">$</span>
               <input
                 ref={commandInputRef}
                 value={command}
-                onChange={(event) => setCommand(event.target.value)}
+                onChange={(event) => {
+                  setCommand(event.target.value);
+                  setCommandHistoryIdx(-1);
+                }}
+                onKeyDown={(event) => {
+                  if (commandHistoryStack.length === 0) return;
+                  if (event.key === "ArrowUp") {
+                    event.preventDefault();
+                    const nextIdx =
+                      commandHistoryIdx < 0
+                        ? commandHistoryStack.length - 1
+                        : Math.max(0, commandHistoryIdx - 1);
+                    setCommandHistoryIdx(nextIdx);
+                    setCommand(commandHistoryStack[nextIdx] ?? "");
+                  } else if (event.key === "ArrowDown") {
+                    event.preventDefault();
+                    if (commandHistoryIdx < 0) return;
+                    const nextIdx = commandHistoryIdx + 1;
+                    if (nextIdx >= commandHistoryStack.length) {
+                      setCommandHistoryIdx(-1);
+                      setCommand("");
+                    } else {
+                      setCommandHistoryIdx(nextIdx);
+                      setCommand(commandHistoryStack[nextIdx]);
+                    }
+                  }
+                }}
                 aria-label="Terminal command"
                 autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
                 spellCheck="false"
                 readOnly={isRunningCommand || !sessionId}
                 placeholder={
                   sessionId
-                    ? "Type a command (e.g. aws sts get-caller-identity)"
+                    ? "Type a command  (↑/↓ for history)"
                     : "Session not ready"
                 }
               />
@@ -1173,32 +1185,47 @@ function App() {
           <section className="card coach-panel">
             <div className="coach-header">
               <div className="coach-header-left">
-                <div className="coach-avatar" aria-hidden="true">
-                  <IconSparkle />
-                  <span className="coach-avatar-pulse" />
-                </div>
-                <h2>ByteGeist AI Coach</h2>
+                <span className="tutor-badge">
+                  <span className="tutor-led" />
+                  tutor <span className="tutor-ver">v1</span>
+                </span>
+                <h2>AI Coach</h2>
                 <span className="badge badge-pill badge-tutor">
-                  <span className="dot" /> Bedrock Tutor Active
+                  bedrock
                 </span>
               </div>
-              <div className="hint-progress">
+              <div
+                className="hint-progress"
+                role="progressbar"
+                aria-label="Hint level"
+                aria-valuemin={0}
+                aria-valuemax={4}
+                aria-valuenow={filled}
+                aria-valuetext={`Hint level ${filled} of 4`}
+              >
                 <span className="label">
                   Hint Level {filled} of 4
                 </span>
-                <div className="hint-bars">{bars}</div>
+                <div className="hint-bars" aria-hidden="true">{bars}</div>
               </div>
             </div>
 
             <div className="coach-body">
-              <div className="coach-history" ref={coachHistoryRef}>
+              <div
+                className="coach-history"
+                ref={coachHistoryRef}
+                role="log"
+                aria-live="polite"
+                aria-relevant="additions"
+                aria-busy={isCoachLoading}
+                aria-label="AI Coach conversation"
+              >
                 {coachHistory.length === 0 && (
                   <div className="coach-empty">
-                    <div className="coach-orb" aria-hidden="true">
-                      <span className="orb-core" />
-                      <span className="orb-ring" />
+                    <div className="coach-mascot-wrap">
+                      <CoachMascot />
                     </div>
-                    <p className="coach-empty-title">Coach is ready when you are.</p>
+                    <p className="coach-empty-title">Coach standing by</p>
                     <p className="coach-empty-sub">
                       Ask a question, request a hint, or investigate
                       the incident in the terminal.

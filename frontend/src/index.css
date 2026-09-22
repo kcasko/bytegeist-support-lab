@@ -1753,3 +1753,700 @@ textarea:focus-visible {
   background: linear-gradient(180deg, #3b82f6, transparent);
   opacity: 0.6;
 }
+
+/* ============================================================
+   OPS CONSOLE PASS — kill marketing decor, add real-console
+   personality: monospace anchors, tight tickets, indexed shell.
+   Overrides earlier pizzazz block.
+   ============================================================ */
+
+/* Neutralize hero atmosphere completely */
+.hero-bg, .hero-grid, .hero-glow,
+.hero-chips, .hero-chip, .hc-dot,
+.hero-accent, .eyebrow-dot,
+.tty-lights, .tty-dot,
+.coach-avatar, .coach-avatar-pulse,
+.scenario-accent { display: none !important; }
+
+/* Undo gradient headline */
+.home-hero h1 {
+  background: none;
+  -webkit-background-clip: initial;
+          background-clip: initial;
+  color: var(--text-hi);
+}
+
+/* --- Ops header ------------------------------------------------------- */
+.ops-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
+  padding: 1.75rem 0 1.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 780px) {
+  .ops-header { grid-template-columns: 1fr; gap: 1rem; }
+}
+
+.ops-header-main h1 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: var(--text-hi);
+}
+.ops-lede {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  max-width: 640px;
+}
+
+.ops-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-mid);
+}
+.ops-tag {
+  color: var(--text-lo);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-inset);
+  font-size: 0.68rem;
+}
+.ops-sep { color: var(--text-lo); }
+.ops-current { color: var(--text-hi); }
+
+.ops-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+.ops-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.ops-stats dt {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-lo);
+  margin: 0;
+}
+.ops-stats dd {
+  margin: 0;
+  color: var(--text-hi);
+  font-size: 0.95rem;
+}
+.ops-stats .mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.tutor-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-hi);
+}
+.tutor-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+  display: inline-block;
+}
+
+/* --- Queue heading refinement ---------------------------------------- */
+.queue-heading {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--border);
+}
+.queue-heading h2 {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-mid);
+}
+.queue-heading .count {
+  border: 0;
+  padding: 0;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-mid);
+}
+
+/* --- Scenario cards: ticket-forward, no gradient chrome --------------- */
+.scenario-grid {
+  gap: 0.75rem;
+}
+.scenario-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.15rem;
+  box-shadow: none;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+.scenario-card:hover {
+  transform: none;
+  background: var(--bg-card-2);
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+.scenario-card::after { content: none; }
+
+.scenario-anchor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.scenario-id {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-inset);
+}
+.scenario-card[data-cat*="Network"] .scenario-id { color: #7dd3fc; border-color: rgba(56, 189, 248, 0.35); }
+.scenario-card[data-cat*="Active"]  .scenario-id { color: #c4b5fd; border-color: rgba(168, 85, 247, 0.35); }
+.scenario-card[data-cat*="AWS"]     .scenario-id,
+.scenario-card[data-cat*="S3"]      .scenario-id,
+.scenario-card[data-cat*="IAM"]     .scenario-id { color: #fdba74; border-color: rgba(251, 146, 60, 0.35); }
+
+.scenario-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-hi);
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.005em;
+}
+.scenario-desc {
+  color: var(--text-mid);
+  font-size: 0.87rem;
+  line-height: 1.55;
+  margin: 0 0 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.scenario-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.scenario-cat {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-lo);
+  letter-spacing: 0.02em;
+}
+.scenario-card[data-cat*="Network"] .scenario-cat { color: #7dd3fc; }
+.scenario-card[data-cat*="Active"]  .scenario-cat { color: #c4b5fd; }
+.scenario-card[data-cat*="AWS"]     .scenario-cat,
+.scenario-card[data-cat*="S3"]      .scenario-cat,
+.scenario-card[data-cat*="IAM"]     .scenario-cat { color: #fdba74; }
+
+/* Compact primary in card foot */
+.scenario-foot .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; }
+
+/* --- Terminal: strip gradients, add per-command index ---------------- */
+.terminal-header {
+  background: var(--bg-card);
+  padding: 0.7rem 1rem;
+}
+.terminal-output {
+  background: var(--bg-terminal);
+  background-image: none;
+}
+.term-prompt {
+  align-items: center;
+  gap: 0.65rem;
+  padding-left: 0;
+}
+.term-idx {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-lo);
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(15, 26, 44, 0.6);
+  min-width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.term-prompt .prompt-glyph {
+  color: var(--brand-hi);
+  font-weight: 600;
+}
+.terminal-input-row {
+  background: var(--bg-inset);
+}
+.terminal-input-row:focus-within { background: var(--bg-inset); box-shadow: none; }
+.terminal-input-row:focus-within .prompt-glyph { color: var(--cyan); }
+
+/* --- Coach: kill orb, use compact tutor badge ------------------------ */
+.coach-header { background: transparent; }
+.coach-panel  { background: var(--bg-card); }
+
+.tutor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-hi);
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-inset);
+}
+.tutor-badge .tutor-led { width: 6px; height: 6px; }
+.tutor-ver { color: var(--text-lo); font-size: 0.68rem; }
+
+.coach-header h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.badge-tutor {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  padding: 2px 8px;
+}
+
+/* Coach empty state — replace pulsing orb with quiet console prompt */
+.coach-empty { padding: 1.5rem 1rem !important; text-align: left; }
+.coach-orb, .orb-core, .orb-ring { display: none !important; }
+.coach-empty-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+.coach-empty-sub { color: var(--text-mid); font-size: 0.87rem; }
+.coach-quick { justify-content: flex-start; }
+.quick-chip {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  background: var(--bg-inset);
+  border-color: var(--border);
+  border-radius: 4px;
+}
+.quick-chip:hover:not(:disabled) {
+  border-color: var(--border-blue);
+  background: var(--bg-card-2);
+}
+
+/* --- Results: keep tier system, drop gradient text ------------------- */
+.results-hero::before { content: none; }
+.score-num {
+  background: none;
+  -webkit-background-clip: initial;
+          background-clip: initial;
+  color: var(--text-hi);
+}
+.score-cell .val {
+  background: none;
+  -webkit-background-clip: initial;
+          background-clip: initial;
+  color: var(--text-hi);
+}
+
+/* --- Brand mark: quiet it, no radial highlight ----------------------- */
+.brand-mark {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-strong);
+  color: var(--brand-hi);
+  box-shadow: none;
+}
+
+/* --- Kill decorative side-stripe on incident summary ----------------- */
+.incident-summary::before { content: none; }
+
+/* --- Reduce global card shadows to a single quiet lift --------------- */
+.card, .scenario-card {
+  box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset,
+              0 10px 24px -20px rgba(0,0,0,0.7);
+}
+
+/* Hint bar gradient stays; badge-tutor dot no longer needed */
+.badge-tutor .dot { display: none; }
+
+/* Slight refinement: mono tag rows in incident summary */
+.incident-heading h1 { font-weight: 600; letter-spacing: -0.015em; }
+
+/* --- Custom art placement -------------------------------------------- */
+.ops-header {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 2.5rem;
+}
+.ops-header-main { min-width: 0; }
+.ops-art {
+  min-width: 0;
+  width: 100%;
+  max-width: 520px;
+  justify-self: end;
+}
+.bg-hero-art {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.35));
+}
+@media (max-width: 900px) {
+  .ops-header { grid-template-columns: 1fr; }
+  .ops-art { display: none; }
+}
+
+.brand-mark {
+  padding: 4px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.bg-brand-mark { display: block; }
+
+.coach-mascot-wrap {
+  width: 96px;
+  margin: 0 auto 0.5rem;
+}
+.bg-coach-mascot { width: 100%; height: auto; display: block; }
+.coach-empty { text-align: center; }
+.coach-empty .coach-quick { justify-content: center; }
+
+/* --- Compact hero so queue is above the fold ------------------------- */
+.ops-header {
+  padding: 0.9rem 0 0.9rem;
+  gap: 1.5rem;
+  margin-bottom: 0.9rem;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+}
+.ops-header-main h1 {
+  margin: 0.2rem 0 0.35rem;
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+}
+.ops-lede { font-size: 0.85rem; line-height: 1.5; max-width: 560px; }
+.ops-stats { gap: 1.25rem; margin-top: 0.75rem; }
+.ops-stats dd { font-size: 0.85rem; }
+.ops-art { max-width: 340px; }
+.bg-hero-art { max-height: 180px; }
+
+/* Trim queue heading + card padding a touch */
+.queue-heading { padding-bottom: 0.5rem; margin-bottom: 0.6rem; }
+.scenario-card { padding: 0.9rem 1rem; }
+.scenario-card h3 { margin-bottom: 0.3rem; }
+.scenario-desc { margin-bottom: 0.7rem; -webkit-line-clamp: 2; }
+.scenario-foot { padding-top: 0.6rem; }
+
+/* --- Incident banner: dense two-column layout ------------------------ */
+.incident-banner { padding: 1rem 1.25rem; }
+.incident-banner .incident-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem 2rem;
+  align-items: start;
+  padding: 0;
+}
+.incident-banner .incident-summary::before { content: none; }
+.incident-banner .incident-summary > .loading-message,
+.incident-banner .incident-summary > .error-message,
+.incident-banner .incident-summary > div[style*="marginTop"] {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem !important;
+}
+
+.incident-main { min-width: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.incident-main .incident-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}
+.incident-main h1 {
+  margin: 0.1rem 0 0.2rem;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--text-hi);
+}
+.incident-issue-line,
+.incident-objective-line {
+  margin: 0;
+  font-size: 0.87rem;
+  line-height: 1.5;
+  color: var(--text-mid);
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+}
+.il-label {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-lo);
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-inset);
+  align-self: center;
+}
+.il-label.amber { color: #fbbf24; border-color: rgba(251, 191, 36, 0.35); }
+
+.incident-meta-inline {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 0.75rem;
+  margin: 0;
+  padding: 0 0 0 1.25rem;
+  border-left: 1px solid var(--border);
+  min-width: 180px;
+}
+.incident-meta-inline > div {
+  display: contents;
+}
+.incident-meta-inline dt {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-lo);
+  margin: 0;
+  align-self: center;
+}
+.incident-meta-inline dd {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-hi);
+}
+.incident-meta-inline .mono { font-family: var(--font-mono); }
+
+@media (max-width: 780px) {
+  .incident-banner .incident-summary { grid-template-columns: 1fr; gap: 1rem; }
+  .incident-meta-inline { padding: 0.75rem 0 0; border-left: 0; border-top: 1px solid var(--border); }
+}
+
+/* ============================================================
+   UX POLISH PASS — a11y focus rings, live regions styling,
+   safe wrapping, tap targets, reduced-motion coverage,
+   scrollbar aesthetics. Overrides earlier defs where needed.
+   ============================================================ */
+
+/* --- Skip link (keyboard-first affordance) --------------------------- */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  background: var(--brand-hi);
+  color: #0b1220;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+  z-index: 100;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+.app-header { position: relative; }
+
+/* --- Unified focus ring (never suppress) ---------------------------- */
+:where(button, a, input, textarea, select, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid var(--brand-hi);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--brand-hi) !important;
+  outline-offset: 1px !important;
+  border-color: var(--brand-hi);
+}
+.terminal-input-row:focus-within {
+  outline: 2px solid var(--brand-hi);
+  outline-offset: -1px;
+}
+.terminal-input-row input:focus-visible {
+  outline: none !important;
+}
+
+/* main can be focused via skip link but shouldn't show a ring */
+main:focus-visible { outline: none; }
+
+/* --- Autofill: keep dark theme in Chromium -------------------------- */
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--text-hi);
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-inset) inset;
+  caret-color: var(--text-hi);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* --- Guarantee tap size on small controls --------------------------- */
+.btn-sm,
+.quick-chip { min-height: 32px; }
+.btn { min-height: 36px; }
+
+/* --- Terminal output: safe wrapping for long AWS CLI ---------------- */
+.term-output {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.term-prompt {
+  flex-wrap: wrap;
+}
+.term-prompt .cmd {
+  word-break: break-all;
+  min-width: 0;
+  flex: 1;
+}
+
+/* --- Coach message content: wrap long inline code ------------------- */
+.msg-bubble pre,
+.msg-bubble code {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* --- Thin custom scrollbars (WebKit + Firefox) ---------------------- */
+.coach-history,
+.terminal-output {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.coach-history::-webkit-scrollbar,
+.terminal-output::-webkit-scrollbar { width: 8px; height: 8px; }
+.coach-history::-webkit-scrollbar-thumb,
+.terminal-output::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+.coach-history::-webkit-scrollbar-thumb:hover,
+.terminal-output::-webkit-scrollbar-thumb:hover { background: var(--brand-hi); }
+
+/* --- Hint bar: smooth fill transition ------------------------------- */
+.hint-bars .seg {
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* --- Loading affordance: coach & terminal "busy" ------------------- */
+.coach-history[aria-busy="true"]::after,
+.terminal-output[aria-busy="true"]::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--brand-hi),
+    transparent
+  );
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: busy-slide 1.1s ease-in-out infinite;
+  margin-top: 0.5rem;
+  border-radius: 2px;
+}
+@keyframes busy-slide {
+  0%   { background-position: -40% 0; }
+  100% { background-position: 140% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coach-history[aria-busy="true"]::after,
+  .terminal-output[aria-busy="true"]::after {
+    animation: none;
+    background: var(--brand-hi);
+    background-size: 100% 100%;
+    opacity: 0.5;
+  }
+}
+
+/* --- Reduced motion: kill remaining animations ---------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .bg-coach-mascot rect[stroke] { animation: none !important; }
+}
+
+/* --- Placeholder contrast ------------------------------------------- */
+::placeholder { color: var(--text-lo); opacity: 1; }
+
+/* --- Disabled state parity ------------------------------------------ */
+button:disabled,
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* --- Selection color to match brand --------------------------------- */
+::selection {
+  background: rgba(59, 130, 246, 0.35);
+  color: #ffffff;
+}
+
+/* --- Back link: bigger hit + clear focus ---------------------------- */
+.back-link { padding: 0.4rem 0.6rem; margin-left: -0.6rem; border-radius: 6px; }
+.back-link:hover { background: var(--bg-card); color: var(--text-hi); }
+
+/* --- Small visual: kbd hint in terminal input row ------------------- */
+.terminal-input-row .kbd-hint {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-lo);
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(15, 26, 44, 0.6);
+  white-space: nowrap;
+}
