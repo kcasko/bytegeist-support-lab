@@ -728,13 +728,36 @@ function App() {
         <AppHeader />
         <main className="app-main">
           <section className="home-hero">
-            <p className="eyebrow">TRAINING QUEUE</p>
-            <h1>Support Lab</h1>
+            <div className="hero-bg" aria-hidden="true">
+              <div className="hero-grid" />
+              <div className="hero-glow" />
+            </div>
+            <p className="eyebrow"><span className="eyebrow-dot" /> TRAINING QUEUE</p>
+            <h1>
+              Support Lab<span className="hero-accent">.</span>
+            </h1>
             <p>
               Practice real-world IT troubleshooting by investigating
               simulated support incidents with an AI coach that teaches
               instead of solving for you.
             </p>
+            <div className="hero-chips">
+              <span className="hero-chip">
+                <span className="hc-dot green" /> {availableScenarios.length} Active Incidents
+              </span>
+              <span className="hero-chip">
+                <span className="hc-dot blue" /> AI Tutor Enabled
+              </span>
+              <span className="hero-chip">
+                <span className="hc-dot amber" /> AWS + Bedrock
+              </span>
+              <span className="hero-chip">
+                <span className="hc-dot purple" /> Adaptive Coaching
+              </span>
+              <span className="hero-chip">
+                <span className="hc-dot cyan" /> Deterministic Scoring
+              </span>
+            </div>
           </section>
 
           <div className="queue-section">
@@ -757,8 +780,10 @@ function App() {
               {availableScenarios.map((scenario) => (
                 <article
                   className="scenario-card"
+                  data-cat={scenario.category}
                   key={scenario.scenarioId}
                 >
+                  <span className="scenario-accent" aria-hidden="true" />
                   <div className="scenario-top">
                     <span className="ticket-id">
                       {scenario.ticketNumber}
@@ -799,6 +824,11 @@ function App() {
   /* --------------------------------- RESULTS */
   if (result) {
     const pct = Math.max(0, Math.min(100, Number(result.total) || 0));
+    const scoreTier =
+      pct >= 90 ? { label: "Excellent", cls: "excellent" }
+      : pct >= 75 ? { label: "Strong", cls: "strong" }
+      : pct >= 60 ? { label: "Passing", cls: "passing" }
+      : { label: "Needs Review", cls: "review" };
     return (
       <div className="app">
         <AppHeader />
@@ -820,12 +850,13 @@ function App() {
                   </p>
                 </div>
                 <div
-                  className="score-ring"
+                  className={`score-ring tier-${scoreTier.cls}`}
                   style={{ "--pct": pct }}
                   aria-label={`Score ${result.total} out of 100`}
                 >
                   <span className="score-num">{result.total}</span>
                   <span className="score-den">/ 100</span>
+                  <span className={`score-tier tier-${scoreTier.cls}`}>{scoreTier.label}</span>
                 </div>
               </div>
 
@@ -1038,6 +1069,11 @@ function App() {
           {/* Terminal */}
           <section className="card terminal-panel">
             <div className="card-header terminal-header">
+              <div className="tty-lights" aria-hidden="true">
+                <span className="tty-dot red" />
+                <span className="tty-dot amber" />
+                <span className="tty-dot green" />
+              </div>
               <div className="card-title">
                 <div className="icon-chip blue">
                   <IconTerminal />
@@ -1137,8 +1173,9 @@ function App() {
           <section className="card coach-panel">
             <div className="coach-header">
               <div className="coach-header-left">
-                <div className="icon-chip cyan">
+                <div className="coach-avatar" aria-hidden="true">
                   <IconSparkle />
+                  <span className="coach-avatar-pulse" />
                 </div>
                 <h2>ByteGeist AI Coach</h2>
                 <span className="badge badge-pill badge-tutor">
@@ -1157,11 +1194,53 @@ function App() {
               <div className="coach-history" ref={coachHistoryRef}>
                 {coachHistory.length === 0 && (
                   <div className="coach-empty">
-                    <p>Coach is ready when you are.</p>
-                    <p>
+                    <div className="coach-orb" aria-hidden="true">
+                      <span className="orb-core" />
+                      <span className="orb-ring" />
+                    </div>
+                    <p className="coach-empty-title">Coach is ready when you are.</p>
+                    <p className="coach-empty-sub">
                       Ask a question, request a hint, or investigate
                       the incident in the terminal.
                     </p>
+                    <div className="coach-quick">
+                      <button
+                        type="button"
+                        className="quick-chip"
+                        onClick={getHint}
+                        disabled={!sessionId || isCoachLoading}
+                      >
+                        <IconLightbulb /> Give me a hint
+                      </button>
+                      <button
+                        type="button"
+                        className="quick-chip"
+                        onClick={() =>
+                          requestCoach(
+                            "ask",
+                            "Where should I start investigating?",
+                            "Where should I start investigating?"
+                          )
+                        }
+                        disabled={!sessionId || isCoachLoading}
+                      >
+                        <IconChat /> Where do I start?
+                      </button>
+                      <button
+                        type="button"
+                        className="quick-chip"
+                        onClick={() =>
+                          requestCoach(
+                            "ask",
+                            "What concept does this incident test?",
+                            "What concept does this incident test?"
+                          )
+                        }
+                        disabled={!sessionId || isCoachLoading}
+                      >
+                        <IconBook /> What am I learning?
+                      </button>
+                    </div>
                   </div>
                 )}
 
