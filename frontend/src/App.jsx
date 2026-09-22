@@ -843,6 +843,43 @@ function App() {
       : pct >= 75 ? { label: "Strong", cls: "strong" }
       : pct >= 60 ? { label: "Passing", cls: "passing" }
       : { label: "Needs Review", cls: "review" };
+
+    const supportedEvidenceCommands = [
+      ...new Set(
+        history
+          .filter(
+            (entry) =>
+              entry.supported === true && entry.kind === "simulated"
+          )
+          .map((entry) => entry.command.trim())
+      ),
+    ];
+    const unsupportedAttempts = history.filter(
+      (entry) => entry.supported === false
+    ).length;
+
+    const demonstratedConcepts =
+      coachLearningState.conceptsDemonstrated ?? [];
+    const reinforcementConcepts =
+      coachLearningState.conceptsNeedingHelp ?? [];
+    const misconceptions =
+      coachLearningState.misconceptionsDetected ?? [];
+
+    const currentScenarioIndex = availableScenarios.findIndex(
+      (scenario) => scenario.scenarioId === activeScenario.id
+    );
+    const orderedNextScenarios =
+      currentScenarioIndex >= 0
+        ? [
+            ...availableScenarios.slice(currentScenarioIndex + 1),
+            ...availableScenarios.slice(0, currentScenarioIndex),
+          ]
+        : availableScenarios;
+    const nextScenario =
+      orderedNextScenarios.find(
+        (scenario) => scenario.scenarioId !== activeScenario.id
+      ) ?? null;
+
     return (
       <div className="app">
         <AppHeader />
@@ -897,6 +934,149 @@ function App() {
                   </span>
                 </div>
               </div>
+
+              <section
+                className="learner-report"
+                aria-labelledby="learner-report-title"
+              >
+                <div className="learner-report-header">
+                  <div>
+                    <p className="learner-report-kicker">
+                      Session learning report
+                    </p>
+                    <h2 id="learner-report-title">
+                      How you worked the incident
+                    </h2>
+                    <p>
+                      Built from deterministic scoring, server-classified
+                      terminal evidence, and the adaptive tutor state recorded
+                      during this session.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="learner-report-metrics">
+                  <div className="report-metric">
+                    <span className="report-metric-icon blue">
+                      <IconTerminal />
+                    </span>
+                    <div>
+                      <span className="report-metric-label">
+                        Evidence gathered
+                      </span>
+                      <strong>{supportedEvidenceCommands.length}</strong>
+                      <small>supported simulator commands</small>
+                    </div>
+                  </div>
+
+                  <div className="report-metric">
+                    <span className="report-metric-icon amber">
+                      <IconLightbulb />
+                    </span>
+                    <div>
+                      <span className="report-metric-label">
+                        Tutor guidance
+                      </span>
+                      <strong>{hintLevel} / 4</strong>
+                      <small>highest guidance level reached</small>
+                    </div>
+                  </div>
+
+                  <div className="report-metric">
+                    <span className="report-metric-icon slate">
+                      <IconInfo />
+                    </span>
+                    <div>
+                      <span className="report-metric-label">
+                        Unsupported attempts
+                      </span>
+                      <strong>{unsupportedAttempts}</strong>
+                      <small>never counted as diagnostic evidence</small>
+                    </div>
+                  </div>
+                </div>
+
+                {(demonstratedConcepts.length > 0 ||
+                  reinforcementConcepts.length > 0 ||
+                  misconceptions.length > 0) && (
+                  <div className="learner-report-groups">
+                    {demonstratedConcepts.length > 0 && (
+                      <div className="report-group success">
+                        <div className="report-group-title">
+                          <IconCheck /> Concepts demonstrated
+                        </div>
+                        <div className="report-chip-row">
+                          {demonstratedConcepts.map((conceptName, index) => (
+                            <span
+                              className="report-chip success"
+                              key={index}
+                            >
+                              {conceptName}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {reinforcementConcepts.length > 0 && (
+                      <div className="report-group reinforce">
+                        <div className="report-group-title">
+                          <IconBook /> Areas to reinforce
+                        </div>
+                        <div className="report-chip-row">
+                          {reinforcementConcepts.map((conceptName, index) => (
+                            <span
+                              className="report-chip reinforce"
+                              key={index}
+                            >
+                              {conceptName}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {misconceptions.length > 0 && (
+                      <div className="report-group warning">
+                        <div className="report-group-title">
+                          <IconWarn /> Misconceptions detected
+                        </div>
+                        <div className="report-chip-row">
+                          {misconceptions.map((misconception, index) => (
+                            <span
+                              className="report-chip warning"
+                              key={index}
+                            >
+                              {misconception}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {nextScenario && (
+                  <div className="report-next">
+                    <div>
+                      <span className="report-next-label">
+                        Next practice option
+                      </span>
+                      <strong>
+                        {nextScenario.ticketNumber} — {nextScenario.title}
+                      </strong>
+                      <span>{nextScenario.category}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => startScenarioFromQueue(nextScenario)}
+                    >
+                      Open next incident →
+                    </button>
+                  </div>
+                )}
+              </section>
 
               <div className="review-section">
                 <h2>Your diagnosis</h2>
