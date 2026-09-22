@@ -18,24 +18,47 @@ Resources:
     Properties:
       TableName: ByteGeistSupportLabScenarios
       BillingMode: PAY_PER_REQUEST
+
       AttributeDefinitions:
         - AttributeName: scenarioId
           AttributeType: S
+
       KeySchema:
         - AttributeName: scenarioId
           KeyType: HASH
+
+  TutorSessionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ByteGeistSupportLabTutorSessions
+      BillingMode: PAY_PER_REQUEST
+
+      AttributeDefinitions:
+        - AttributeName: sessionId
+          AttributeType: S
+
+      KeySchema:
+        - AttributeName: sessionId
+          KeyType: HASH
+
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
 
   SupportLabApi:
     Type: AWS::Serverless::HttpApi
     Properties:
       StageName: $default
+
       CorsConfiguration:
         AllowOrigins:
           - "*"
+
         AllowMethods:
           - GET
           - POST
           - OPTIONS
+
         AllowHeaders:
           - Content-Type
 
@@ -49,10 +72,14 @@ Resources:
       Environment:
         Variables:
           SCENARIO_TABLE: !Ref ScenarioTable
+          SESSION_TABLE: !Ref TutorSessionTable
 
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ScenarioTable
+
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TutorSessionTable
 
       Events:
         RunCommand:
@@ -111,6 +138,34 @@ Resources:
             Method: GET
             PayloadFormatVersion: "2.0"
 
+  StartSessionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: bytegeist-support-lab-start-session
+      CodeUri: ../backend/start-session/
+      Handler: index.handler
+
+      Environment:
+        Variables:
+          SCENARIO_TABLE: !Ref ScenarioTable
+          SESSION_TABLE: !Ref TutorSessionTable
+
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ScenarioTable
+
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TutorSessionTable
+
+      Events:
+        StartSession:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SupportLabApi
+            Path: /scenarios/{id}/session
+            Method: POST
+            PayloadFormatVersion: "2.0"
+
   SubmitScenarioFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -143,6 +198,42 @@ Resources:
             Method: POST
             PayloadFormatVersion: "2.0"
 
+  CoachScenarioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: bytegeist-support-lab-coach-scenario
+      CodeUri: ../backend/coach-scenario/
+      Handler: index.handler
+      Timeout: 20
+
+      Environment:
+        Variables:
+          SCENARIO_TABLE: !Ref ScenarioTable
+          SESSION_TABLE: !Ref TutorSessionTable
+
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ScenarioTable
+
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TutorSessionTable
+
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource:
+                - !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/amazon.nova-micro-v1:0"
+
+      Events:
+        CoachScenario:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SupportLabApi
+            Path: /scenarios/{id}/coach
+            Method: POST
+            PayloadFormatVersion: "2.0"
+
 Outputs:
 
   ApiUrl:
@@ -153,6 +244,18 @@ Outputs:
     Description: DynamoDB scenario table
     Value: !Ref ScenarioTable
 
+  TutorSessionTableName:
+    Description: AI tutor session table
+    Value: !Ref TutorSessionTable
+
   RunCommandFunctionArn:
     Description: Run Command Lambda ARN
     Value: !GetAtt RunCommandFunction.Arn
+
+  StartSessionFunctionArn:
+    Description: Start Session Lambda ARN
+    Value: !GetAtt StartSessionFunction.Arn
+
+  CoachScenarioFunctionArn:
+    Description: AI Coach Lambda ARN
+    Value: !GetAtt CoachScenarioFunction.Arn
