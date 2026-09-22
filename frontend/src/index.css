@@ -32,10 +32,19 @@ button {
   padding: 0.8rem 1.1rem;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background: #1d4ed8;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .app-shell {
@@ -43,6 +52,10 @@ button:hover {
   margin: 0 auto;
   padding: 3rem 0 6rem;
 }
+
+/* -------------------------------------------------- */
+/* Hero                                               */
+/* -------------------------------------------------- */
 
 .hero {
   padding: 4rem 0;
@@ -71,6 +84,10 @@ button:hover {
   letter-spacing: 0.18em;
 }
 
+/* -------------------------------------------------- */
+/* Shared                                             */
+/* -------------------------------------------------- */
+
 .section-heading {
   display: flex;
   align-items: end;
@@ -87,6 +104,35 @@ button:hover {
   color: #6b7280;
 }
 
+.loading-message {
+  color: #9ca3af;
+}
+
+.error-message {
+  color: #fca5a5;
+  background: #1f1115;
+  border: 1px solid #7f1d1d;
+  border-radius: 8px;
+  padding: 1rem;
+  line-height: 1.5;
+}
+
+.text-button {
+  background: transparent;
+  color: #9ca3af;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.text-button:hover:not(:disabled) {
+  background: transparent;
+  color: white;
+}
+
+/* -------------------------------------------------- */
+/* Scenario queue                                     */
+/* -------------------------------------------------- */
+
 .scenario-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -96,11 +142,17 @@ button:hover {
 .scenario-card,
 .ticket-panel,
 .diagnosis-panel,
-.results-card {
+.results-card,
+.coach-panel {
   border: 1px solid #1f2937;
   background: #0d1320;
   border-radius: 12px;
   padding: 1.5rem;
+}
+
+.scenario-card {
+  display: flex;
+  flex-direction: column;
 }
 
 .scenario-card h3 {
@@ -115,7 +167,17 @@ button:hover {
 .scenario-description {
   min-height: 72px;
   line-height: 1.6;
+  flex: 1;
 }
+
+.scenario-card button {
+  align-self: flex-start;
+  margin-top: 0.75rem;
+}
+
+/* -------------------------------------------------- */
+/* Ticket                                             */
+/* -------------------------------------------------- */
 
 .ticket-row {
   display: flex;
@@ -128,18 +190,6 @@ button:hover {
 
 .difficulty {
   color: #86efac;
-}
-
-.text-button {
-  background: transparent;
-  color: #9ca3af;
-  padding: 0;
-  margin-bottom: 1.5rem;
-}
-
-.text-button:hover {
-  background: transparent;
-  color: white;
 }
 
 .ticket-panel {
@@ -192,6 +242,10 @@ button:hover {
   margin-bottom: 0;
 }
 
+/* -------------------------------------------------- */
+/* Terminal                                           */
+/* -------------------------------------------------- */
+
 .terminal-panel {
   background: #020617;
   border: 1px solid #1f2937;
@@ -222,6 +276,10 @@ button:hover {
   margin-bottom: 1.5rem;
 }
 
+.terminal-entry:last-child {
+  margin-bottom: 0;
+}
+
 .terminal-entry p {
   white-space: pre-wrap;
 }
@@ -233,6 +291,7 @@ button:hover {
 .terminal-entry pre {
   font-family: inherit;
   white-space: pre-wrap;
+  word-break: break-word;
   color: #d1d5db;
   line-height: 1.5;
 }
@@ -248,12 +307,203 @@ button:hover {
 
 .terminal-input-row input {
   flex: 1;
+  min-width: 0;
   border: 0;
   outline: 0;
   background: transparent;
   color: #f9fafb;
   font-family: inherit;
 }
+
+.terminal-input-row input:disabled,
+.terminal-input-row input[readonly] {
+  opacity: 0.65;
+}
+
+.terminal-status {
+  color: #6b7280;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------- */
+/* AI Coach                                           */
+/* -------------------------------------------------- */
+
+.coach-panel {
+  margin-bottom: 1.5rem;
+  border-color: #1e3a5f;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30, 58, 95, 0.16),
+      rgba(13, 19, 32, 0) 180px
+    ),
+    #0d1320;
+}
+
+.coach-panel > p {
+  color: #9ca3af;
+  line-height: 1.6;
+  max-width: 760px;
+}
+
+.coach-panel .section-heading {
+  margin-bottom: 0.75rem;
+}
+
+.coach-panel .section-heading > span {
+  border: 1px solid #1e3a5f;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  color: #93c5fd;
+  background: #0f172a;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.75rem;
+}
+
+.coach-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 1.25rem 0;
+}
+
+.coach-actions button {
+  background: #172033;
+  border: 1px solid #2a3953;
+  color: #dbeafe;
+  padding: 0.65rem 0.9rem;
+}
+
+.coach-actions button:hover:not(:disabled) {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+.coach-history {
+  min-height: 180px;
+  max-height: 420px;
+  overflow-y: auto;
+  background: #080e19;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.coach-empty {
+  color: #6b7280;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.coach-empty p {
+  margin: 0.35rem 0;
+  line-height: 1.5;
+}
+
+.coach-message {
+  max-width: 85%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.9rem;
+  border-radius: 10px;
+}
+
+.coach-message:last-child {
+  margin-bottom: 0;
+}
+
+.coach-message strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+}
+
+.coach-message p {
+  margin: 0;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.coach-message small {
+  display: block;
+  margin-top: 0.65rem;
+  color: #93c5fd;
+  font-family: "Cascadia Code", "Consolas", monospace;
+}
+
+.coach-assistant {
+  margin-right: auto;
+  background: #111c2e;
+  border: 1px solid #1e3a5f;
+  color: #dbeafe;
+}
+
+.coach-assistant strong {
+  color: #60a5fa;
+}
+
+.coach-user {
+  margin-left: auto;
+  background: #172033;
+  border: 1px solid #374151;
+}
+
+.coach-user strong {
+  color: #d1d5db;
+}
+
+.coach-context {
+  margin: 1rem 0;
+  border-left: 3px solid #60a5fa;
+  background: #0f172a;
+  padding: 0.85rem 1rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.coach-context p {
+  margin: 0.35rem 0;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.coach-context strong {
+  color: #93c5fd;
+}
+
+.coach-input-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.coach-input-row input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  background: #111827;
+  color: #f9fafb;
+  padding: 0.85rem 1rem;
+  outline: none;
+}
+
+.coach-input-row input::placeholder {
+  color: #6b7280;
+}
+
+.coach-input-row input:focus {
+  border-color: #3b82f6;
+}
+
+.coach-input-row input:disabled {
+  opacity: 0.6;
+}
+
+/* -------------------------------------------------- */
+/* Diagnosis                                          */
+/* -------------------------------------------------- */
 
 .diagnosis-panel h2 {
   margin-top: 0;
@@ -282,6 +532,10 @@ textarea {
   outline: none;
 }
 
+textarea::placeholder {
+  color: #6b7280;
+}
+
 textarea:focus {
   border-color: #3b82f6;
 }
@@ -290,6 +544,10 @@ textarea:focus {
   align-self: flex-start;
   margin-top: 0.75rem;
 }
+
+/* -------------------------------------------------- */
+/* Results                                            */
+/* -------------------------------------------------- */
 
 .results-card {
   max-width: 800px;
@@ -345,6 +603,45 @@ textarea:focus {
   color: #86efac;
 }
 
+.review-section.feedback {
+  background: #0f172a;
+  border: 1px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+
+.feedback-text {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  color: #dbeafe;
+}
+
+/* -------------------------------------------------- */
+/* Scrollbars                                         */
+/* -------------------------------------------------- */
+
+.terminal-output,
+.coach-history {
+  scrollbar-width: thin;
+  scrollbar-color: #374151 transparent;
+}
+
+.terminal-output::-webkit-scrollbar,
+.coach-history::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-output::-webkit-scrollbar-thumb,
+.coach-history::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 999px;
+}
+
+/* -------------------------------------------------- */
+/* Responsive                                         */
+/* -------------------------------------------------- */
+
 @media (max-width: 700px) {
   .app-shell {
     padding-top: 1.5rem;
@@ -363,41 +660,38 @@ textarea:focus {
     flex-direction: column;
     gap: 0.25rem;
   }
-}
 
-.terminal-status {
-  color: #6b7280;
-  font-size: 0.8rem;
-  white-space: nowrap;
-}
+  .terminal-input-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
 
-.loading-message {
-  color: #9ca3af;
-}
+  .terminal-input-row input {
+    flex-basis: 100%;
+  }
 
-.error-message {
-  color: #fca5a5;
-  background: #1f1115;
-  border: 1px solid #7f1d1d;
-  border-radius: 8px;
-  padding: 1rem;
-}
+  .coach-panel .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-.diagnosis-panel button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
+  .coach-actions {
+    flex-direction: column;
+  }
 
-.review-section.feedback {
-  background: #0f172a;
-  border: 1px solid #1e3a5f;
-  border-radius: 8px;
-  padding: 1.25rem;
-  margin: 1rem 0;
-}
+  .coach-actions button {
+    width: 100%;
+  }
 
-.feedback-text {
-  white-space: pre-wrap;
-  line-height: 1.7;
-  color: #dbeafe;
+  .coach-message {
+    max-width: 95%;
+  }
+
+  .coach-input-row {
+    flex-direction: column;
+  }
+
+  .coach-input-row button {
+    width: 100%;
+  }
 }
