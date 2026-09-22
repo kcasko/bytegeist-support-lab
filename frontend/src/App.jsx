@@ -2,6 +2,240 @@ import { useEffect, useRef, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+/* ---------- inline icons (stroked, 1.75) ---------- */
+const Icon = ({ path, size = 16, fill = "none" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill={fill}
+    stroke="currentColor"
+    strokeWidth="1.75"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    {path}
+  </svg>
+);
+const IconBrand = () => (
+  <Icon
+    path={
+      <>
+        <path d="M12 3v3" />
+        <path d="M12 18v3" />
+        <path d="M5 12H2" />
+        <path d="M22 12h-3" />
+        <circle cx="12" cy="12" r="6" />
+        <path d="M9 12h6" />
+        <path d="M12 9v6" />
+      </>
+    }
+    size={20}
+  />
+);
+const IconTicket = () => (
+  <Icon
+    path={
+      <>
+        <path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6z" />
+        <path d="M12 6v12" strokeDasharray="2 2" />
+      </>
+    }
+    size={18}
+  />
+);
+const IconTerminal = () => (
+  <Icon
+    path={
+      <>
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <path d="M7 9l3 3-3 3" />
+        <path d="M13 15h4" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconSparkle = () => (
+  <Icon
+    path={
+      <>
+        <path d="M12 3l1.6 4.2L18 9l-4.4 1.8L12 15l-1.6-4.2L6 9l4.4-1.8L12 3z" />
+        <path d="M19 15l.8 2 2 .8-2 .8L19 21l-.8-2-2-.8 2-.8L19 15z" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconLightbulb = () => (
+  <Icon
+    path={
+      <>
+        <path d="M9 18h6" />
+        <path d="M10 21h4" />
+        <path d="M12 3a6 6 0 0 0-3 11.2c.6.5 1 1.2 1 2V17h4v-.8c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconDoc = () => (
+  <Icon
+    path={
+      <>
+        <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+        <path d="M14 3v6h6" />
+        <path d="M8 13h8M8 17h5" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconCheck = () => (
+  <Icon
+    path={
+      <>
+        <path d="M4 12l5 5L20 6" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconInfo = () => (
+  <Icon
+    path={
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8v.01" />
+        <path d="M11 12h1v4h1" />
+      </>
+    }
+    size={13}
+  />
+);
+const IconSend = () => (
+  <Icon
+    path={<path d="M4 12l16-8-6 18-4-8-6-2z" />}
+    size={18}
+  />
+);
+const IconArrowLeft = () => (
+  <Icon path={<path d="M15 6l-6 6 6 6" />} size={16} />
+);
+const IconUser = () => (
+  <Icon
+    path={
+      <>
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 21a8 8 0 0 1 16 0" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconBuilding = () => (
+  <Icon
+    path={
+      <>
+        <rect x="4" y="4" width="16" height="16" rx="1" />
+        <path d="M8 8h.01M12 8h.01M16 8h.01M8 12h.01M12 12h.01M16 12h.01M8 16h8" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconMonitor = () => (
+  <Icon
+    path={
+      <>
+        <rect x="3" y="4" width="18" height="12" rx="2" />
+        <path d="M8 20h8M12 16v4" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconTarget = () => (
+  <Icon
+    path={
+      <>
+        <circle cx="12" cy="12" r="8" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="12" cy="12" r="1" fill="currentColor" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconBook = () => (
+  <Icon
+    path={
+      <>
+        <path d="M4 4h10a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4V4z" />
+        <path d="M4 16a4 4 0 0 1 4-4h10" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconWarn = () => (
+  <Icon
+    path={
+      <>
+        <path d="M12 3L2 20h20L12 3z" />
+        <path d="M12 10v5M12 18v.01" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconGear = () => (
+  <Icon
+    path={
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconChat = () => (
+  <Icon
+    path={
+      <>
+        <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </>
+    }
+    size={16}
+  />
+);
+const IconRefresh = () => (
+  <Icon
+    path={
+      <>
+        <path d="M4 4v6h6" />
+        <path d="M20 20v-6h-6" />
+        <path d="M4 10a8 8 0 0 1 14-3l2 3" />
+        <path d="M20 14a8 8 0 0 1-14 3l-2-3" />
+      </>
+    }
+    size={16}
+  />
+);
+
+/* ---------- helpers ---------- */
+function initials(name) {
+  if (!name) return "?";
+  return name
+    .split(/\s+/)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 function App() {
   const [activeScenario, setActiveScenario] = useState(null);
 
@@ -13,72 +247,27 @@ function App() {
 
   const [result, setResult] = useState(null);
 
-  const [isRunningCommand, setIsRunningCommand] =
-    useState(false);
+  const [isRunningCommand, setIsRunningCommand] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [availableScenarios, setAvailableScenarios] = useState([]);
+  const [isLoadingScenarios, setIsLoadingScenarios] = useState(true);
+  const [scenarioLoadError, setScenarioLoadError] = useState("");
 
-  const [
-    availableScenarios,
-    setAvailableScenarios,
-  ] = useState([]);
+  const [submissionMessage, setSubmissionMessage] = useState("");
 
-  const [
-    isLoadingScenarios,
-    setIsLoadingScenarios,
-  ] = useState(true);
+  // Tutor session
+  const [sessionId, setSessionId] = useState("");
+  const [isStartingSession, setIsStartingSession] = useState(false);
+  const [sessionError, setSessionError] = useState("");
+  const [hintLevel, setHintLevel] = useState(1);
 
-  const [
-    scenarioLoadError,
-    setScenarioLoadError,
-  ] = useState("");
-
-  const [
-    submissionMessage,
-    setSubmissionMessage,
-  ] = useState("");
-
-  // -----------------------------------------
-  // Tutor session state
-  // -----------------------------------------
-
-  const [sessionId, setSessionId] =
-    useState("");
-
-  const [
-    isStartingSession,
-    setIsStartingSession,
-  ] = useState(false);
-
-  const [sessionError, setSessionError] =
-    useState("");
-
-  const [hintLevel, setHintLevel] =
-    useState(1);
-
-  // -----------------------------------------
-  // AI Coach state
-  // -----------------------------------------
-
-  const [coachInput, setCoachInput] =
-    useState("");
-
-  const [coachHistory, setCoachHistory] =
-    useState([]);
-
-  const [
-    isCoachLoading,
-    setIsCoachLoading,
-  ] = useState(false);
-
-  const [coachError, setCoachError] =
-    useState("");
-
-  const [
-    coachLearningState,
-    setCoachLearningState,
-  ] = useState({
+  // AI Coach
+  const [coachInput, setCoachInput] = useState("");
+  const [coachHistory, setCoachHistory] = useState([]);
+  const [isCoachLoading, setIsCoachLoading] = useState(false);
+  const [coachError, setCoachError] = useState("");
+  const [coachLearningState, setCoachLearningState] = useState({
     concept: "",
     suggestedNextAction: "",
     conceptsDemonstrated: [],
@@ -90,183 +279,103 @@ function App() {
   const commandInputRef = useRef(null);
   const coachHistoryRef = useRef(null);
 
-  // -----------------------------------------
-  // Load scenario queue
-  // -----------------------------------------
-
   useEffect(() => {
     async function loadScenarios() {
       try {
-        const response = await fetch(
-          `${API_URL}/scenarios`,
-        );
-
+        const response = await fetch(`${API_URL}/scenarios`);
         if (!response.ok) {
-          throw new Error(
-            `Request failed with status ${response.status}`,
-          );
+          throw new Error(`Request failed with status ${response.status}`);
         }
-
         const data = await response.json();
-
-        setAvailableScenarios(
-          data.scenarios ?? [],
-        );
-
+        setAvailableScenarios(data.scenarios ?? []);
         setScenarioLoadError("");
       } catch (error) {
-        console.error(
-          "Unable to load scenarios:",
-          error,
-        );
-
+        console.error("Unable to load scenarios:", error);
         setScenarioLoadError(
-          "Unable to load training incidents. Please try again.",
+          "Unable to load training incidents. Please try again."
         );
       } finally {
         setIsLoadingScenarios(false);
       }
     }
-
     loadScenarios();
   }, []);
 
-  // -----------------------------------------
-  // Auto-scroll terminal
-  // -----------------------------------------
-
   useEffect(() => {
     if (terminalRef.current) {
-      terminalRef.current.scrollTop =
-        terminalRef.current.scrollHeight;
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [history]);
 
-  // -----------------------------------------
-  // Auto-scroll coach conversation
-  // -----------------------------------------
-
   useEffect(() => {
     if (coachHistoryRef.current) {
-      coachHistoryRef.current.scrollTop =
-        coachHistoryRef.current.scrollHeight;
+      coachHistoryRef.current.scrollTop = coachHistoryRef.current.scrollHeight;
     }
   }, [coachHistory]);
 
-  // -----------------------------------------
-  // Utility
-  // -----------------------------------------
-
-  async function getErrorMessage(
-    response,
-    fallback,
-  ) {
+  async function getErrorMessage(response, fallback) {
     try {
       const data = await response.json();
-
       return data.error || fallback;
     } catch {
       return fallback;
     }
   }
 
-  // -----------------------------------------
-  // Start tutor session
-  // -----------------------------------------
-
-  async function createTutorSession(
-    scenarioId,
-  ) {
+  async function createTutorSession(scenarioId) {
     const response = await fetch(
       `${API_URL}/scenarios/${scenarioId}/session`,
       {
         method: "POST",
-
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
-      },
+      }
     );
-
     if (!response.ok) {
-      const message =
-        await getErrorMessage(
-          response,
-          "Unable to create training session.",
-        );
-
+      const message = await getErrorMessage(
+        response,
+        "Unable to create training session."
+      );
       throw new Error(message);
     }
-
     return response.json();
   }
 
-  // -----------------------------------------
-  // Open scenario
-  // -----------------------------------------
-
-  async function startScenarioFromQueue(
-    scenarioSummary,
-  ) {
+  async function startScenarioFromQueue(scenarioSummary) {
     try {
       setScenarioLoadError("");
-
       const response = await fetch(
-        `${API_URL}/scenarios/${scenarioSummary.scenarioId}`,
+        `${API_URL}/scenarios/${scenarioSummary.scenarioId}`
       );
-
       if (!response.ok) {
-        throw new Error(
-          `Request failed with status ${response.status}`,
-        );
+        throw new Error(`Request failed with status ${response.status}`);
       }
-
-      const scenario =
-        await response.json();
-
-      await startScenario({
-        ...scenario,
-        id: scenario.scenarioId,
-      });
+      const scenario = await response.json();
+      await startScenario({ ...scenario, id: scenario.scenarioId });
     } catch (error) {
-      console.error(
-        "Unable to load scenario:",
-        error,
-      );
-
+      console.error("Unable to load scenario:", error);
       setScenarioLoadError(
-        "Unable to open this training incident. Please try again.",
+        "Unable to open this training incident. Please try again."
       );
     }
   }
 
   async function startScenario(scenario) {
     setActiveScenario(scenario);
-
     setCommand("");
     setHistory([]);
-
     setDiagnosis("");
     setSolution("");
-
     setResult(null);
-
     setSubmissionMessage("");
-
     setIsRunningCommand(false);
     setIsSubmitting(false);
-
     setSessionId("");
     setSessionError("");
     setHintLevel(1);
-
     setCoachInput("");
     setCoachHistory([]);
     setCoachError("");
-
     setCoachLearningState({
       concept: "",
       suggestedNextAction: "",
@@ -276,33 +385,17 @@ function App() {
     });
 
     setIsStartingSession(true);
-
     try {
-      const session =
-        await createTutorSession(
-          scenario.id,
-        );
-
-      setSessionId(
-        session.sessionId,
-      );
-
-      setHintLevel(
-        session.hintLevel ?? 1,
-      );
-
+      const session = await createTutorSession(scenario.id);
+      setSessionId(session.sessionId);
+      setHintLevel(session.hintLevel ?? 1);
       requestAnimationFrame(() => {
         commandInputRef.current?.focus();
       });
     } catch (error) {
-      console.error(
-        "Unable to start tutor session:",
-        error,
-      );
-
+      console.error("Unable to start tutor session:", error);
       setSessionError(
-        error.message ||
-          "Unable to start the training session.",
+        error.message || "Unable to start the training session."
       );
     } finally {
       setIsStartingSession(false);
@@ -310,69 +403,39 @@ function App() {
   }
 
   async function retryTutorSession() {
-    if (!activeScenario) {
-      return;
-    }
-
+    if (!activeScenario) return;
     setSessionError("");
     setIsStartingSession(true);
-
     try {
-      const session =
-        await createTutorSession(
-          activeScenario.id,
-        );
-
-      setSessionId(
-        session.sessionId,
-      );
-
-      setHintLevel(
-        session.hintLevel ?? 1,
-      );
+      const session = await createTutorSession(activeScenario.id);
+      setSessionId(session.sessionId);
+      setHintLevel(session.hintLevel ?? 1);
     } catch (error) {
-      console.error(
-        "Unable to restart tutor session:",
-        error,
-      );
-
+      console.error("Unable to restart tutor session:", error);
       setSessionError(
-        error.message ||
-          "Unable to start the training session.",
+        error.message || "Unable to start the training session."
       );
     } finally {
       setIsStartingSession(false);
     }
   }
 
-  // -----------------------------------------
-  // Return to queue
-  // -----------------------------------------
-
   function returnHome() {
     setActiveScenario(null);
-
     setCommand("");
     setHistory([]);
-
     setDiagnosis("");
     setSolution("");
-
     setResult(null);
-
     setSubmissionMessage("");
-
     setIsRunningCommand(false);
     setIsSubmitting(false);
-
     setSessionId("");
     setSessionError("");
     setHintLevel(1);
-
     setCoachInput("");
     setCoachHistory([]);
     setCoachError("");
-
     setCoachLearningState({
       concept: "",
       suggestedNextAction: "",
@@ -382,137 +445,76 @@ function App() {
     });
   }
 
-  // -----------------------------------------
-  // Run terminal command
-  // -----------------------------------------
-
   async function runCommand(event) {
     event.preventDefault();
-
-    const submittedCommand =
-      command.trim();
-
-    if (
-      !submittedCommand ||
-      isRunningCommand ||
-      !sessionId
-    ) {
-      return;
-    }
+    const submittedCommand = command.trim();
+    if (!submittedCommand || isRunningCommand || !sessionId) return;
 
     setCommand("");
     setIsRunningCommand(true);
-
     try {
       const response = await fetch(
         `${API_URL}/scenarios/${activeScenario.id}/command`,
         {
           method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             sessionId,
             command: submittedCommand,
           }),
-        },
+        }
       );
-
       if (!response.ok) {
-        const message =
-          await getErrorMessage(
-            response,
-            "Unable to run command.",
-          );
-
+        const message = await getErrorMessage(
+          response,
+          "Unable to run command."
+        );
         throw new Error(message);
       }
-
-      const data =
-        await response.json();
-
-      setHistory(
-        (currentHistory) => [
-          ...currentHistory,
-          {
-            command:
-              submittedCommand,
-
-            output:
-              data.output,
-
-            supported:
-              data.supported,
-
-            kind:
-              data.kind,
-          },
-        ],
-      );
+      const data = await response.json();
+      setHistory((currentHistory) => [
+        ...currentHistory,
+        {
+          command: submittedCommand,
+          output: data.output,
+          supported: data.supported,
+          kind: data.kind,
+        },
+      ]);
     } catch (error) {
-      console.error(
-        "Command request failed:",
-        error,
-      );
-
-      setHistory(
-        (currentHistory) => [
-          ...currentHistory,
-          {
-            command:
-              submittedCommand,
-
-            output:
-              error.message ||
-              `Unable to contact the ByteGeist training server.
-
-Please try again.`,
-          },
-        ],
-      );
+      console.error("Command request failed:", error);
+      setHistory((currentHistory) => [
+        ...currentHistory,
+        {
+          command: submittedCommand,
+          output:
+            error.message ||
+            `Unable to contact the ByteGeist training server.\n\nPlease try again.`,
+        },
+      ]);
     } finally {
       setIsRunningCommand(false);
-
       requestAnimationFrame(() => {
         commandInputRef.current?.focus();
       });
     }
   }
 
-  // -----------------------------------------
-  // AI Coach
-  // -----------------------------------------
-
   async function requestCoach(
     action,
     message = "",
     displayMessage = "",
-    selectedEvidence = null,
+    selectedEvidence = null
   ) {
-    if (
-      !sessionId ||
-      isCoachLoading
-    ) {
-      return;
-    }
-
+    if (!sessionId || isCoachLoading) return;
     setCoachError("");
     setIsCoachLoading(true);
 
     if (displayMessage) {
-      setCoachHistory(
-        (current) => [
-          ...current,
-          {
-            role: "user",
-            message:
-              displayMessage,
-          },
-        ],
-      );
+      setCoachHistory((current) => [
+        ...current,
+        { role: "user", message: displayMessage },
+      ]);
     }
 
     try {
@@ -520,89 +522,43 @@ Please try again.`,
         `${API_URL}/scenarios/${activeScenario.id}/coach`,
         {
           method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             sessionId,
             action,
             message,
             selectedEvidence,
           }),
-        },
+        }
       );
-
       if (!response.ok) {
-        const errorMessage =
-          await getErrorMessage(
-            response,
-            "The AI coach is unavailable.",
-          );
-
-        throw new Error(
-          errorMessage,
+        const errorMessage = await getErrorMessage(
+          response,
+          "The AI coach is unavailable."
         );
+        throw new Error(errorMessage);
       }
-
-      const data =
-        await response.json();
-
-      setCoachHistory(
-        (current) => [
-          ...current,
-          {
-            role: "assistant",
-
-            message:
-              data.message,
-
-            teachingType:
-              data.teachingType,
-
-            concept:
-              data.concept,
-          },
-        ],
-      );
-
-      setHintLevel(
-        data.hintLevel ??
-          hintLevel,
-      );
-
+      const data = await response.json();
+      setCoachHistory((current) => [
+        ...current,
+        {
+          role: "assistant",
+          message: data.message,
+          teachingType: data.teachingType,
+          concept: data.concept,
+        },
+      ]);
+      setHintLevel(data.hintLevel ?? hintLevel);
       setCoachLearningState({
-        concept:
-          data.concept ?? "",
-
-        suggestedNextAction:
-          data.suggestedNextAction ??
-          "",
-
-        conceptsDemonstrated:
-          data.conceptsDemonstrated ??
-          [],
-
-        conceptsNeedingHelp:
-          data.conceptsNeedingHelp ??
-          [],
-
-        misconceptionsDetected:
-          data.misconceptionsDetected ??
-          [],
+        concept: data.concept ?? "",
+        suggestedNextAction: data.suggestedNextAction ?? "",
+        conceptsDemonstrated: data.conceptsDemonstrated ?? [],
+        conceptsNeedingHelp: data.conceptsNeedingHelp ?? [],
+        misconceptionsDetected: data.misconceptionsDetected ?? [],
       });
     } catch (error) {
-      console.error(
-        "Coach request failed:",
-        error,
-      );
-
-      setCoachError(
-        error.message ||
-          "The AI coach is unavailable.",
-      );
+      console.error("Coach request failed:", error);
+      setCoachError(error.message || "The AI coach is unavailable.");
     } finally {
       setIsCoachLoading(false);
     }
@@ -610,891 +566,817 @@ Please try again.`,
 
   async function askCoach(event) {
     event.preventDefault();
-
-    const message =
-      coachInput.trim();
-
-    if (
-      !message ||
-      isCoachLoading
-    ) {
-      return;
-    }
-
+    const message = coachInput.trim();
+    if (!message || isCoachLoading) return;
     setCoachInput("");
-
-    await requestCoach(
-      "ask",
-      message,
-      message,
-    );
+    await requestCoach("ask", message, message);
   }
 
   async function getHint() {
-    await requestCoach(
-      "hint",
-      "",
-      "Give me a hint.",
-    );
+    await requestCoach("hint", "", "Give me a hint.");
   }
 
   async function explainOutput(entry) {
     if (!entry) {
-      setCoachError(
-        "Select a terminal command to explain.",
-      );
-
+      setCoachError("Select a terminal command to explain.");
       return;
     }
-
     await requestCoach(
       "explain",
       "",
       `Explain this output: ${entry.command}`,
-      {
-        command: entry.command,
-        output: entry.output,
-      },
+      { command: entry.command, output: entry.output }
     );
   }
 
   async function explainLastOutput() {
     if (history.length === 0) {
-      setCoachError(
-        "Run a troubleshooting command first.",
-      );
-
+      setCoachError("Run a troubleshooting command first.");
       return;
     }
-
-    await explainOutput(
-      history[history.length - 1],
-    );
+    await explainOutput(history[history.length - 1]);
   }
 
   async function checkMyThinking() {
-    const diagnosisText =
-      diagnosis.trim();
-
-    const solutionText =
-      solution.trim();
-
-    if (
-      !diagnosisText &&
-      !solutionText
-    ) {
+    const diagnosisText = diagnosis.trim();
+    const solutionText = solution.trim();
+    if (!diagnosisText && !solutionText) {
       setCoachError(
-        "Enter your current diagnosis or resolution first.",
+        "Enter your current diagnosis or resolution first."
       );
-
       return;
     }
-
     const reasoning = [
-      diagnosisText
-        ? `My current diagnosis: ${diagnosisText}`
-        : "",
-
-      solutionText
-        ? `My proposed resolution: ${solutionText}`
-        : "",
+      diagnosisText ? `My current diagnosis: ${diagnosisText}` : "",
+      solutionText ? `My proposed resolution: ${solutionText}` : "",
     ]
       .filter(Boolean)
       .join("\n");
-
-    await requestCoach(
-      "check",
-      reasoning,
-      "Check my current reasoning.",
-    );
+    await requestCoach("check", reasoning, "Check my current reasoning.");
   }
-
-  // -----------------------------------------
-  // Submit incident
-  // -----------------------------------------
 
   async function submitDiagnosis(event) {
     event.preventDefault();
-
-    if (
-      !diagnosis.trim() ||
-      !solution.trim() ||
-      isSubmitting
-    ) {
-      return;
-    }
+    if (!diagnosis.trim() || !solution.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
     setSubmissionMessage("");
-
     try {
       const response = await fetch(
         `${API_URL}/scenarios/${activeScenario.id}/submit`,
         {
           method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            diagnosis:
-              diagnosis.trim(),
-
-            solution:
-              solution.trim(),
-
-            commandsUsed:
-              history.map(
-                (entry) =>
-                  entry.command,
-              ),
-
-            commandHistory:
-              history.map(
-                (entry) => ({
-                  command:
-                    entry.command,
-
-                  output:
-                    entry.output,
-                }),
-              ),
+            diagnosis: diagnosis.trim(),
+            solution: solution.trim(),
+            commandsUsed: history.map((entry) => entry.command),
+            commandHistory: history.map((entry) => ({
+              command: entry.command,
+              output: entry.output,
+            })),
           }),
-        },
+        }
       );
-
       if (!response.ok) {
         throw new Error(
-          `Request failed with status ${response.status}`,
+          `Request failed with status ${response.status}`
         );
       }
-
-      const data =
-        await response.json();
-
+      const data = await response.json();
       setResult(data);
     } catch (error) {
-      console.error(
-        "Unable to submit incident:",
-        error,
-      );
-
+      console.error("Unable to submit incident:", error);
       setSubmissionMessage(
-        "Unable to score this incident. Please try again.",
+        "Unable to score this incident. Please try again."
       );
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  // -----------------------------------------
-  // Incident queue
-  // -----------------------------------------
+  /* --------------------------------- HEADER */
+  const AppHeader = () => (
+    <header className="app-header">
+      <div className="app-header-inner">
+        <div className="brand">
+          <div className="brand-mark">
+            <IconBrand />
+          </div>
+          <div className="brand-text">
+            <div className="brand-name">ByteGeist Support Lab</div>
+            <div className="brand-tag">
+              AI-guided IT troubleshooting practice
+            </div>
+          </div>
+        </div>
+        <div className="header-status">
+          <div className="status-online">
+            <span className="dot" />
+            Lab Environment Online
+          </div>
+          <div className="divider" />
+          <div className="status-sub">Powered by AWS + Bedrock</div>
+        </div>
+      </div>
+    </header>
+  );
 
+  /* --------------------------------- QUEUE */
   if (!activeScenario) {
     return (
-      <main className="app-shell">
-        <header className="hero">
-          <p className="eyebrow">
-            BYTEGEIST
-          </p>
+      <div className="app">
+        <AppHeader />
+        <main className="app-main">
+          <section className="home-hero">
+            <p className="eyebrow">TRAINING QUEUE</p>
+            <h1>Support Lab</h1>
+            <p>
+              Practice real-world IT troubleshooting by investigating
+              simulated support incidents with an AI coach that teaches
+              instead of solving for you.
+            </p>
+          </section>
 
-          <h1>Support Lab</h1>
-
-          <p className="hero-copy">
-            Practice real-world IT troubleshooting by investigating simulated
-            support incidents.
-          </p>
-        </header>
-
-        <section>
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">
-                TRAINING QUEUE
-              </p>
-
-              <h2>
-                Available Incidents
-              </h2>
-            </div>
-
-            <span>
-              {availableScenarios.length} available
+          <div className="queue-heading">
+            <h2>Available incidents</h2>
+            <span className="count">
+              {availableScenarios.length} open
             </span>
           </div>
 
           {isLoadingScenarios && (
-            <p className="loading-message">
-              Loading incidents...
-            </p>
+            <p className="loading-message">Loading incidents...</p>
           )}
-
           {scenarioLoadError && (
-            <p className="error-message">
-              {scenarioLoadError}
-            </p>
+            <p className="error-message">{scenarioLoadError}</p>
           )}
 
-          {!isLoadingScenarios &&
-            !scenarioLoadError && (
-              <div className="scenario-grid">
-                {availableScenarios.map(
-                  (scenario) => (
-                    <article
-                      className="scenario-card"
-                      key={
-                        scenario.scenarioId
-                      }
-                    >
-                      <div className="ticket-row">
-                        <span>
-                          {
-                            scenario.ticketNumber
-                          }
-                        </span>
-
-                        <span className="difficulty">
-                          {
-                            scenario.difficulty
-                          }
-                        </span>
-                      </div>
-
-                      <h3>
-                        {scenario.title}
-                      </h3>
-
-                      <p>
-                        {scenario.category}
-                      </p>
-
-                      <p className="scenario-description">
-                        {scenario.issue}
-                      </p>
-
-                      <button
-                        onClick={() =>
-                          startScenarioFromQueue(
-                            scenario,
-                          )
-                        }
-                      >
-                        Start Incident
-                      </button>
-                    </article>
-                  ),
-                )}
-              </div>
-            )}
-        </section>
-      </main>
-    );
-  }
-
-  // -----------------------------------------
-  // Results
-  // -----------------------------------------
-
-  if (result) {
-    return (
-      <main className="app-shell">
-        <button
-          className="text-button"
-          onClick={returnHome}
-        >
-          ← Incident Queue
-        </button>
-
-        <section className="results-card">
-          <p className="eyebrow">
-            {
-              activeScenario.ticketNumber
-            }
-          </p>
-
-          <h1>Incident Review</h1>
-
-          <div className="score">
-            {result.total}/100
-          </div>
-
-          <div className="score-breakdown">
-            <div>
-              <span>Diagnosis</span>
-
-              <strong>
-                {
-                  result.diagnosisScore
-                }
-                /50
-              </strong>
-            </div>
-
-            <div>
-              <span>Resolution</span>
-
-              <strong>
-                {
-                  result.solutionScore
-                }
-                /30
-              </strong>
-            </div>
-
-            <div>
-              <span>
-                Troubleshooting
-              </span>
-
-              <strong>
-                {
-                  result.troubleshootingScore
-                }
-                /20
-              </strong>
-            </div>
-          </div>
-
-          <div className="review-section">
-            <h2>Your diagnosis</h2>
-
-            <p>{diagnosis}</p>
-          </div>
-
-          <div className="review-section">
-            <h2>Your resolution</h2>
-
-            <p>{solution}</p>
-          </div>
-
-          {result.expectedDiagnosis && (
-            <div className="review-section answer">
-              <h2>
-                Expected root cause
-              </h2>
-
-              <p>
-                {
-                  result.expectedDiagnosis
-                }
-              </p>
-            </div>
-          )}
-
-          {result.expectedSolution && (
-            <div className="review-section answer">
-              <h2>
-                Recommended resolution
-              </h2>
-
-              <p>
-                {
-                  result.expectedSolution
-                }
-              </p>
-            </div>
-          )}
-
-          {result.feedback && (
-            <div className="review-section feedback">
-              <h2>AI Coaching</h2>
-
-              <p className="feedback-text">
-                {result.feedback}
-              </p>
-            </div>
-          )}
-
-          <button
-            onClick={() =>
-              startScenario(
-                activeScenario,
-              )
-            }
-          >
-            Retry Incident
-          </button>
-        </section>
-      </main>
-    );
-  }
-
-  // -----------------------------------------
-  // Active scenario
-  // -----------------------------------------
-
-  return (
-    <main className="app-shell">
-      <button
-        className="text-button"
-        onClick={returnHome}
-      >
-        ← Incident Queue
-      </button>
-
-      <section className="ticket-panel">
-        <div className="ticket-row">
-          <span>
-            {
-              activeScenario.ticketNumber
-            }
-          </span>
-
-          <span className="difficulty">
-            {
-              activeScenario.difficulty
-            }
-          </span>
-        </div>
-
-        <h1>
-          {activeScenario.title}
-        </h1>
-
-        <div className="ticket-details">
-          <div>
-            <span>User</span>
-
-            <strong>
-              {
-                activeScenario.user.name
-              }
-            </strong>
-          </div>
-
-          <div>
-            <span>
-              Department
-            </span>
-
-            <strong>
-              {
-                activeScenario.user
-                  .department
-              }
-            </strong>
-          </div>
-
-          <div>
-            <span>Computer</span>
-
-            <strong>
-              {
-                activeScenario.user
-                  .computer
-              }
-            </strong>
-          </div>
-        </div>
-
-        <div className="issue-box">
-          <h2>Reported issue</h2>
-
-          <p>
-            {activeScenario.issue}
-          </p>
-        </div>
-
-        <p className="objective">
-          {
-            activeScenario.objective
-          }
-        </p>
-
-        {isStartingSession && (
-          <p className="loading-message">
-            Starting AI tutor
-            session...
-          </p>
-        )}
-
-        {sessionError && (
-          <div>
-            <p className="error-message">
-              {sessionError}
-            </p>
-
-            <button
-              onClick={
-                retryTutorSession
-              }
-              disabled={
-                isStartingSession
-              }
-            >
-              Retry Session
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* ---------------------------------- */}
-      {/* Terminal                           */}
-      {/* ---------------------------------- */}
-
-      <section className="terminal-panel">
-        <div className="terminal-header">
-          <span>
-            {
-              activeScenario.user
-                .computer
-            }
-          </span>
-
-          <span>
-            Windows PowerShell
-          </span>
-        </div>
-
-        <div
-          className="terminal-output"
-          ref={terminalRef}
-        >
-          <div className="terminal-entry">
-            <p>
-              ByteGeist Support Lab Terminal
-              <br />
-
-              {sessionId
-                ? 'Type troubleshooting commands below. Type "help" if you need command guidance.'
-                : "Waiting for training session..."}
-            </p>
-          </div>
-
-          {history.map(
-            (entry, index) => (
-              <div
-                className="terminal-entry"
-                key={index}
-              >
-                <p className="terminal-command">
-                  C:\Users\
-                  {
-                    activeScenario.user
-                      .username
-                  }
-                  &gt;{" "}
-                  {entry.command}
-                </p>
-
-                <pre>
-                  {entry.output}
-                </pre>
-
-                <button
-                  type="button"
-                  className="terminal-explain-button"
-                  onClick={() =>
-                    explainOutput(entry)
-                  }
-                  disabled={
-                    !sessionId ||
-                    isCoachLoading
-                  }
+          {!isLoadingScenarios && !scenarioLoadError && (
+            <div className="scenario-grid">
+              {availableScenarios.map((scenario) => (
+                <article
+                  className="scenario-card"
+                  key={scenario.scenarioId}
                 >
-                  Explain This Output
+                  <div className="scenario-top">
+                    <span className="ticket-id">
+                      {scenario.ticketNumber}
+                    </span>
+                    <span
+                      className="badge badge-difficulty"
+                      data-level={scenario.difficulty}
+                    >
+                      {scenario.difficulty}
+                    </span>
+                  </div>
+                  <h3>{scenario.title}</h3>
+                  <div className="scenario-meta">
+                    <span
+                      className="badge badge-cat"
+                      data-cat={scenario.category}
+                    >
+                      {scenario.category}
+                    </span>
+                  </div>
+                  <p className="scenario-desc">{scenario.issue}</p>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => startScenarioFromQueue(scenario)}
+                  >
+                    Start Incident
+                  </button>
+                </article>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  /* --------------------------------- RESULTS */
+  if (result) {
+    const pct = Math.max(0, Math.min(100, Number(result.total) || 0));
+    return (
+      <div className="app">
+        <AppHeader />
+        <main className="app-main">
+          <button className="back-link" onClick={returnHome}>
+            <IconArrowLeft /> Incident queue
+          </button>
+
+          <div className="results-wrap">
+            <section className="card">
+              <div className="results-hero">
+                <div>
+                  <p className="eyebrow">
+                    {activeScenario.ticketNumber} — Incident review
+                  </p>
+                  <h1>{activeScenario.title}</h1>
+                  <p className="sub">
+                    Deterministic score plus AI coaching feedback.
+                  </p>
+                </div>
+                <div
+                  className="score-ring"
+                  style={{ "--pct": pct }}
+                  aria-label={`Score ${result.total} out of 100`}
+                >
+                  <span className="score-num">{result.total}</span>
+                  <span className="score-den">/ 100</span>
+                </div>
+              </div>
+
+              <div className="score-breakdown">
+                <div className="score-cell">
+                  <span className="lbl">Diagnosis</span>
+                  <span className="val">
+                    {result.diagnosisScore}
+                    <small> / 50</small>
+                  </span>
+                </div>
+                <div className="score-cell">
+                  <span className="lbl">Resolution</span>
+                  <span className="val">
+                    {result.solutionScore}
+                    <small> / 30</small>
+                  </span>
+                </div>
+                <div className="score-cell">
+                  <span className="lbl">Troubleshooting</span>
+                  <span className="val">
+                    {result.troubleshootingScore}
+                    <small> / 20</small>
+                  </span>
+                </div>
+              </div>
+
+              <div className="review-section">
+                <h2>Your diagnosis</h2>
+                <p>{diagnosis}</p>
+              </div>
+              <div className="review-section">
+                <h2>Your resolution</h2>
+                <p>{solution}</p>
+              </div>
+
+              {result.expectedDiagnosis && (
+                <div className="review-section answer">
+                  <h2>Expected root cause</h2>
+                  <p>{result.expectedDiagnosis}</p>
+                </div>
+              )}
+              {result.expectedSolution && (
+                <div className="review-section answer">
+                  <h2>Recommended resolution</h2>
+                  <p>{result.expectedSolution}</p>
+                </div>
+              )}
+
+              {result.feedback && (
+                <div className="review-section feedback">
+                  <h2>AI coaching</h2>
+                  <p>{result.feedback}</p>
+                </div>
+              )}
+
+              <div className="results-actions">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => startScenario(activeScenario)}
+                >
+                  <IconRefresh /> Retry incident
+                </button>
+                <button className="btn btn-ghost" onClick={returnHome}>
+                  Back to queue
                 </button>
               </div>
-            ),
-          )}
-        </div>
-
-        <form
-          className="terminal-input-row"
-          onSubmit={runCommand}
-        >
-          <span>
-            C:\Users\
-            {
-              activeScenario.user
-                .username
-            }
-            &gt;
-          </span>
-
-          <input
-            ref={commandInputRef}
-            autoFocus
-            value={command}
-            onChange={(event) =>
-              setCommand(
-                event.target.value,
-              )
-            }
-            aria-label="Terminal command"
-            autoComplete="off"
-            spellCheck="false"
-            readOnly={
-              isRunningCommand ||
-              !sessionId
-            }
-          />
-
-          {isRunningCommand && (
-            <span className="terminal-status">
-              Running...
-            </span>
-          )}
-        </form>
-      </section>
-
-      {/* ---------------------------------- */}
-      {/* AI Coach                           */}
-      {/* ---------------------------------- */}
-
-      <section className="coach-panel">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">
-              AI TUTOR
-            </p>
-
-            <h2>
-              ByteGeist AI Coach
-            </h2>
+            </section>
           </div>
+        </main>
+      </div>
+    );
+  }
 
-          <span>
-            Hint level {hintLevel}/4
+  /* --------------------------------- ACTIVE INCIDENT */
+  const filled = Math.max(0, Math.min(4, hintLevel));
+  const bars = [0, 1, 2, 3].map((i) => (
+    <span key={i} className={`seg${i < filled ? " on" : ""}`} />
+  ));
+
+  const {
+    concept,
+    suggestedNextAction,
+    conceptsNeedingHelp,
+    misconceptionsDetected,
+  } = coachLearningState;
+
+  return (
+    <div className="app">
+      <AppHeader />
+      <main className="app-main">
+        <button className="back-link" onClick={returnHome}>
+          <IconArrowLeft /> Incident queue
+        </button>
+
+        <p className="crumbs">
+          Incidents <span className="crumb-sep">/</span>{" "}
+          <span className="crumb-current">
+            {activeScenario.ticketNumber}
           </span>
-        </div>
-
-        <p>
-          Use the coach to understand evidence,
-          work through troubleshooting logic,
-          and get progressive hints without
-          immediately revealing the answer.
         </p>
 
-        <div className="coach-actions">
-          <button
-            type="button"
-            onClick={getHint}
-            disabled={
-              !sessionId ||
-              isCoachLoading
-            }
-          >
-            Get Hint
-          </button>
-
-          <button
-            type="button"
-            onClick={
-              explainLastOutput
-            }
-            disabled={
-              !sessionId ||
-              isCoachLoading ||
-              history.length === 0
-            }
-          >
-            Explain Last Output
-          </button>
-
-          <button
-            type="button"
-            onClick={
-              checkMyThinking
-            }
-            disabled={
-              !sessionId ||
-              isCoachLoading
-            }
-          >
-            Check My Thinking
-          </button>
-        </div>
-
-        <div
-          className="coach-history"
-          ref={coachHistoryRef}
-        >
-          {coachHistory.length ===
-            0 && (
-            <div className="coach-empty">
-              <p>
-                No coaching messages yet.
-              </p>
-
-              <p>
-                Ask a question, request a
-                hint, or investigate the
-                incident in the terminal.
-              </p>
-            </div>
-          )}
-
-          {coachHistory.map(
-            (entry, index) => (
-              <div
-                key={index}
-                className={`coach-message coach-${entry.role}`}
-              >
-                <strong>
-                  {entry.role ===
-                  "assistant"
-                    ? "AI Coach"
-                    : "You"}
-                </strong>
-
-                <p>
-                  {entry.message}
-                </p>
-
-                {entry.concept && (
-                  <small>
-                    Concept:{" "}
-                    {entry.concept}
-                  </small>
-                )}
+        {/* -------- Incident summary -------- */}
+        <section className="card">
+          <div className="incident-summary">
+            <div className="incident-top">
+              <div className="icon-chip blue">
+                <IconTicket />
               </div>
-            ),
-          )}
-
-          {isCoachLoading && (
-            <div className="coach-message coach-assistant">
-              <strong>
-                AI Coach
-              </strong>
-
-              <p>
-                Thinking about the evidence...
-              </p>
+              <div className="incident-heading">
+                <span className="ticket-id">
+                  {activeScenario.ticketNumber}
+                </span>
+                <h1>{activeScenario.title}</h1>
+                <div className="incident-badges">
+                  <span
+                    className="badge badge-difficulty"
+                    data-level={activeScenario.difficulty}
+                  >
+                    {activeScenario.difficulty}
+                  </span>
+                  {activeScenario.category && (
+                    <span
+                      className="badge badge-cat"
+                      data-cat={activeScenario.category}
+                    >
+                      {activeScenario.category}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
-          )}
-        </div>
 
-        {coachError && (
-          <p className="error-message">
-            {coachError}
-          </p>
-        )}
+            <div className="incident-meta-grid">
+              <div className="meta-item">
+                <div className="icon-chip slate">
+                  <IconUser />
+                </div>
+                <div className="meta-body">
+                  <span className="meta-label">User</span>
+                  <span className="meta-value">
+                    {activeScenario.user.name}
+                  </span>
+                </div>
+              </div>
+              <div className="meta-item">
+                <div className="icon-chip slate">
+                  <IconBuilding />
+                </div>
+                <div className="meta-body">
+                  <span className="meta-label">Department</span>
+                  <span className="meta-value">
+                    {activeScenario.user.department}
+                  </span>
+                </div>
+              </div>
+              <div className="meta-item">
+                <div className="icon-chip slate">
+                  <IconMonitor />
+                </div>
+                <div className="meta-body">
+                  <span className="meta-label">Workstation</span>
+                  <span className="meta-value">
+                    {activeScenario.user.computer}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        {coachLearningState.concept && (
-          <div className="coach-context">
-            <p>
-              <strong>
-                Current concept:
-              </strong>{" "}
-              {
-                coachLearningState.concept
-              }
-            </p>
+            <div className="incident-issue">
+              <div className="issue-block">
+                <span className="meta-label">Reported issue</span>
+                <p>{activeScenario.issue}</p>
+              </div>
+              {activeScenario.objective && (
+                <div className="objective-block">
+                  <div className="icon-chip amber">
+                    <IconTarget />
+                  </div>
+                  <div>
+                    <span className="meta-label">Objective</span>
+                    <p>{activeScenario.objective}</p>
+                  </div>
+                </div>
+              )}
+            </div>
 
-            {coachLearningState
-              .suggestedNextAction && (
-              <p>
-                <strong>
-                  Suggested next step:
-                </strong>{" "}
-                {
-                  coachLearningState
-                    .suggestedNextAction
-                }
+            {isStartingSession && (
+              <p className="loading-message" style={{ marginTop: "1rem" }}>
+                Starting AI tutor session…
               </p>
             )}
+            {sessionError && (
+              <div style={{ marginTop: "1rem" }}>
+                <p className="error-message">{sessionError}</p>
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={retryTutorSession}
+                  disabled={isStartingSession}
+                >
+                  Retry session
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </section>
 
-        <form
-          className="coach-input-row"
-          onSubmit={askCoach}
-        >
-          <input
-            type="text"
-            value={coachInput}
-            onChange={(event) =>
-              setCoachInput(
-                event.target.value,
-              )
-            }
-            placeholder="Ask the coach about the incident..."
-            disabled={
-              !sessionId ||
-              isCoachLoading
-            }
-          />
+        {/* -------- Workspace: terminal + coach -------- */}
+        <div className="workspace">
+          {/* Terminal */}
+          <section className="card terminal-panel">
+            <div className="card-header terminal-header">
+              <div className="card-title">
+                <div className="icon-chip blue">
+                  <IconTerminal />
+                </div>
+                <div>
+                  <h2>{activeScenario.user.computer}</h2>
+                  <span className="sub">
+                    Windows PowerShell / AWS CLI
+                  </span>
+                </div>
+              </div>
+              <div className="status-inline">
+                <span className="dot" /> Connected
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={
-              !sessionId ||
-              isCoachLoading ||
-              !coachInput.trim()
-            }
-          >
-            Ask Coach
-          </button>
-        </form>
-      </section>
+            <div className="terminal-output" ref={terminalRef}>
+              <div className="terminal-intro">
+                <p>
+                  ByteGeist Support Lab Terminal
+                  {"\n"}
+                  {sessionId
+                    ? 'Type troubleshooting commands below. Type "help" if you need command guidance.'
+                    : "Waiting for training session..."}
+                </p>
+              </div>
 
-      {/* ---------------------------------- */}
-      {/* Diagnosis                          */}
-      {/* ---------------------------------- */}
+              {history.map((entry, index) => {
+                const kindClass =
+                  entry.kind === "help"
+                    ? "help"
+                    : entry.supported === false
+                      ? "unsupported"
+                      : entry.supported === true
+                        ? "supported"
+                        : "";
+                return (
+                  <div className="term-entry" key={index}>
+                    <div className="term-prompt">
+                      <span className="prompt-glyph">
+                        C:\Users\{activeScenario.user.username}&gt;
+                      </span>
+                      <span className="cmd">{entry.command}</span>
+                      {kindClass && (
+                        <span
+                          className={`kind-dot ${kindClass}`}
+                          title={
+                            kindClass === "supported"
+                              ? "Simulator supported"
+                              : kindClass === "unsupported"
+                                ? "Not simulated"
+                                : "Help output"
+                          }
+                        />
+                      )}
+                    </div>
+                    <pre className="term-output">{entry.output}</pre>
+                    <div className="term-actions">
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        onClick={() => explainOutput(entry)}
+                        disabled={!sessionId || isCoachLoading}
+                      >
+                        <IconInfo /> Explain this output
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-      <section className="diagnosis-panel">
-        <h2>Resolve Incident</h2>
+            <form
+              className="terminal-input-row"
+              onSubmit={runCommand}
+            >
+              <span className="prompt-glyph">
+                C:\Users\{activeScenario.user.username}&gt;
+              </span>
+              <input
+                ref={commandInputRef}
+                autoFocus
+                value={command}
+                onChange={(event) => setCommand(event.target.value)}
+                aria-label="Terminal command"
+                autoComplete="off"
+                spellCheck="false"
+                readOnly={isRunningCommand || !sessionId}
+                placeholder={
+                  sessionId
+                    ? "Type a command (e.g. aws sts get-caller-identity)"
+                    : "Session not ready"
+                }
+              />
+              {isRunningCommand && (
+                <span className="term-status">Running…</span>
+              )}
+            </form>
+          </section>
 
-        <form
-          onSubmit={submitDiagnosis}
-        >
-          <label htmlFor="diagnosis">
-            What is the root cause?
-          </label>
+          {/* Coach */}
+          <section className="card coach-panel">
+            <div className="coach-header">
+              <div className="coach-header-left">
+                <div className="icon-chip cyan">
+                  <IconSparkle />
+                </div>
+                <h2>ByteGeist AI Coach</h2>
+                <span className="badge badge-pill badge-tutor">
+                  <span className="dot" /> Bedrock Tutor Active
+                </span>
+              </div>
+              <div className="hint-progress">
+                <span className="label">
+                  Hint Level {filled} of 4
+                </span>
+                <div className="hint-bars">{bars}</div>
+              </div>
+            </div>
 
-          <textarea
-            id="diagnosis"
-            value={diagnosis}
-            onChange={(event) => {
-              setDiagnosis(
-                event.target.value,
-              );
+            <div className="coach-body">
+              <div className="coach-history" ref={coachHistoryRef}>
+                {coachHistory.length === 0 && (
+                  <div className="coach-empty">
+                    <p>Coach is ready when you are.</p>
+                    <p>
+                      Ask a question, request a hint, or investigate
+                      the incident in the terminal.
+                    </p>
+                  </div>
+                )}
 
-              setSubmissionMessage("");
-            }}
-            placeholder="Describe what you believe is causing the problem..."
-            required
-          />
+                {coachHistory.map((entry, index) => (
+                  <div
+                    key={index}
+                    className={`msg ${entry.role === "assistant" ? "assistant" : "user"}`}
+                  >
+                    <div
+                      className={`msg-avatar ${entry.role === "assistant" ? "assistant" : "user"}`}
+                    >
+                      {entry.role === "assistant" ? "AI" : "YOU"}
+                    </div>
+                    <div className="msg-bubble">
+                      <div className="msg-role">
+                        {entry.role === "assistant"
+                          ? "AI Coach"
+                          : "You"}
+                      </div>
+                      <p className="msg-text">{entry.message}</p>
+                      {entry.concept && (
+                        <span className="msg-concept">
+                          Concept: {entry.concept}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
 
-          <label htmlFor="solution">
-            How would you fix it?
-          </label>
+                {isCoachLoading && (
+                  <div className="msg assistant">
+                    <div className="msg-avatar assistant">AI</div>
+                    <div className="msg-bubble">
+                      <div className="msg-role">AI Coach</div>
+                      <p className="msg-text">
+                        Thinking about the evidence…
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-          <textarea
-            id="solution"
-            value={solution}
-            onChange={(event) => {
-              setSolution(
-                event.target.value,
-              );
+              {(concept ||
+                suggestedNextAction ||
+                (conceptsNeedingHelp && conceptsNeedingHelp.length > 0) ||
+                (misconceptionsDetected &&
+                  misconceptionsDetected.length > 0)) && (
+                <div className="learning-cards">
+                  {concept && (
+                    <div className="learning-card concept">
+                      <div className="icon-chip blue">
+                        <IconBook />
+                      </div>
+                      <div className="lc-body">
+                        <div className="lc-title">Concept</div>
+                        <p className="lc-text">{concept}</p>
+                      </div>
+                    </div>
+                  )}
+                  {suggestedNextAction && (
+                    <div className="learning-card next">
+                      <div className="icon-chip amber">
+                        <IconLightbulb />
+                      </div>
+                      <div className="lc-body">
+                        <div className="lc-title">
+                          Suggested next step
+                        </div>
+                        <p className="lc-text">
+                          {suggestedNextAction}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {conceptsNeedingHelp &&
+                    conceptsNeedingHelp.length > 0 && (
+                      <div className="learning-card help">
+                        <div className="icon-chip cyan">
+                          <IconInfo />
+                        </div>
+                        <div className="lc-body">
+                          <div className="lc-title">
+                            Concepts needing help
+                          </div>
+                          <div className="chip-row">
+                            {conceptsNeedingHelp.map((c, i) => (
+                              <span key={i} className="chip">
+                                {c}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  {misconceptionsDetected &&
+                    misconceptionsDetected.length > 0 && (
+                      <div className="learning-card miscon">
+                        <div className="icon-chip red">
+                          <IconWarn />
+                        </div>
+                        <div className="lc-body">
+                          <div className="lc-title">
+                            Misconceptions
+                          </div>
+                          <div className="chip-row">
+                            {misconceptionsDetected.map((m, i) => (
+                              <span key={i} className="chip warn">
+                                {m}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                </div>
+              )}
 
-              setSubmissionMessage("");
-            }}
-            placeholder="Describe the steps you would take to resolve the incident..."
-            required
-          />
+              {coachError && (
+                <p className="error-message">{coachError}</p>
+              )}
 
-          {submissionMessage && (
-            <p className="error-message">
-              {submissionMessage}
-            </p>
-          )}
+              <form className="coach-input-row" onSubmit={askCoach}>
+                <input
+                  type="text"
+                  value={coachInput}
+                  onChange={(e) => setCoachInput(e.target.value)}
+                  placeholder="Ask a question, get a hint, or share your thinking…"
+                  disabled={!sessionId || isCoachLoading}
+                />
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-icon"
+                  aria-label="Ask coach"
+                  disabled={
+                    !sessionId || isCoachLoading || !coachInput.trim()
+                  }
+                >
+                  <IconSend />
+                </button>
+              </form>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Scoring..."
-              : "Submit Resolution"}
-          </button>
-        </form>
-      </section>
-    </main>
+              <div className="coach-actions">
+                <button
+                  type="button"
+                  className="btn btn-hint"
+                  onClick={getHint}
+                  disabled={!sessionId || isCoachLoading}
+                >
+                  <IconLightbulb /> Get Hint
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={explainLastOutput}
+                  disabled={
+                    !sessionId ||
+                    isCoachLoading ||
+                    history.length === 0
+                  }
+                >
+                  <IconDoc /> Explain Last Output
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={checkMyThinking}
+                  disabled={!sessionId || isCoachLoading}
+                >
+                  <IconCheck /> Check My Thinking
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* -------- Diagnose + resolve -------- */}
+        <section className="card diagnose-card">
+          <div className="card-header">
+            <div className="card-title">
+              <div className="icon-chip green">
+                <IconCheck />
+              </div>
+              <div>
+                <h2>Diagnose + Resolve</h2>
+                <span className="sub">
+                  Summarize your findings and propose a resolution.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={submitDiagnosis} className="card-body">
+            <div className="diagnose-grid">
+              <div className="field">
+                <label htmlFor="diagnosis">
+                  What is the root cause?
+                </label>
+                <textarea
+                  id="diagnosis"
+                  value={diagnosis}
+                  onChange={(event) => {
+                    setDiagnosis(event.target.value);
+                    setSubmissionMessage("");
+                  }}
+                  placeholder="Describe what you believe is causing the problem…"
+                  required
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="solution">
+                  How would you fix it?
+                </label>
+                <textarea
+                  id="solution"
+                  value={solution}
+                  onChange={(event) => {
+                    setSolution(event.target.value);
+                    setSubmissionMessage("");
+                  }}
+                  placeholder="Describe the steps you would take to resolve the incident…"
+                  required
+                />
+              </div>
+            </div>
+
+            {submissionMessage && (
+              <p className="error-message">{submissionMessage}</p>
+            )}
+
+            <div className="diagnose-actions">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+              >
+                <IconSend />
+                {isSubmitting ? "Scoring…" : "Submit Resolution"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={checkMyThinking}
+                disabled={!sessionId || isCoachLoading}
+              >
+                <IconCheck /> Check My Thinking
+              </button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
   );
 }
 
