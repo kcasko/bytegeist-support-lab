@@ -1,0 +1,100 @@
+{
+  "scenarioId": {
+    "S": "linux-004"
+  },
+  "title": {
+    "S": "Service Won't Start"
+  },
+  "ticketNumber": {
+    "S": "INC-1004"
+  },
+  "category": {
+    "S": "Linux / System Administration"
+  },
+  "difficulty": {
+    "S": "Intermediate"
+  },
+  "issue": {
+    "S": "The internal ByteGeist status site is unreachable. The bytegeist-web systemd service on app-lin-04 fails immediately after start. Nothing was intentionally changed today, but the service refuses to stay up."
+  },
+  "objective": {
+    "S": "Investigate the service, its recent journal output, and the configuration file it depends on. Identify why the service cannot read its configuration and recommend a fix that restores it without weakening file security."
+  },
+  "user": {
+    "M": {
+      "name": {
+        "S": "Priya Anand"
+      },
+      "username": {
+        "S": "panand"
+      },
+      "department": {
+        "S": "Platform Engineering"
+      },
+      "computer": {
+        "S": "app-lin-04"
+      }
+    }
+  },
+  "commands": {
+    "M": {
+      "systemctl status bytegeist-web": {
+        "S": "\u25cf bytegeist-web.service - ByteGeist internal status site\n     Loaded: loaded (/etc/systemd/system/bytegeist-web.service; enabled; preset: enabled)\n     Active: failed (Result: exit-code) since Tue 2026-09-22 09:14:52 UTC; 3min ago\n   Duration: 412ms\n    Process: 18422 ExecStart=/usr/local/bin/bytegeist-web --config /etc/bytegeist/config.yaml (code=exited, status=1/FAILURE)\n   Main PID: 18422 (code=exited, status=1/FAILURE)\n        CPU: 38ms\n\nSep 22 09:14:52 app-lin-04 systemd[1]: bytegeist-web.service: Main process exited, code=exited, status=1/FAILURE\nSep 22 09:14:52 app-lin-04 systemd[1]: bytegeist-web.service: Failed with result 'exit-code'."
+      },
+      "journalctl -u bytegeist-web --no-pager -n 20": {
+        "S": "Sep 22 09:14:52 app-lin-04 systemd[1]: Started bytegeist-web.service - ByteGeist internal status site.\nSep 22 09:14:52 app-lin-04 bytegeist-web[18422]: 2026-09-22T09:14:52Z INFO  bytegeist_web: starting bytegeist-web version 1.4.2\nSep 22 09:14:52 app-lin-04 bytegeist-web[18422]: 2026-09-22T09:14:52Z ERROR bytegeist_web: failed to read config /etc/bytegeist/config.yaml: Permission denied (os error 13)\nSep 22 09:14:52 app-lin-04 bytegeist-web[18422]: 2026-09-22T09:14:52Z ERROR bytegeist_web: fatal: configuration unavailable, exiting\nSep 22 09:14:52 app-lin-04 systemd[1]: bytegeist-web.service: Main process exited, code=exited, status=1/FAILURE\nSep 22 09:14:52 app-lin-04 systemd[1]: bytegeist-web.service: Failed with result 'exit-code'."
+      },
+      "ls -l /etc/bytegeist/config.yaml": {
+        "S": "-rw------- 1 root root 412 Sep 21 22:03 /etc/bytegeist/config.yaml"
+      },
+      "cat /etc/bytegeist/config.yaml": {
+        "S": "cat: /etc/bytegeist/config.yaml: Permission denied"
+      },
+      "systemctl cat bytegeist-web": {
+        "S": "# /etc/systemd/system/bytegeist-web.service\n[Unit]\nDescription=ByteGeist internal status site\nAfter=network-online.target\n\n[Service]\nType=simple\nUser=bytegeist\nGroup=bytegeist\nExecStart=/usr/local/bin/bytegeist-web --config /etc/bytegeist/config.yaml\nRestart=on-failure\nRestartSec=5\n\n[Install]\nWantedBy=multi-user.target"
+      },
+      "id bytegeist": {
+        "S": "uid=987(bytegeist) gid=987(bytegeist) groups=987(bytegeist)"
+      },
+      "ls -ld /etc/bytegeist": {
+        "S": "drwxr-x--- 2 root bytegeist 4096 Sep 21 22:03 /etc/bytegeist"
+      }
+    }
+  },
+  "expectedDiagnosis": {
+    "S": "The bytegeist-web service runs as the bytegeist user, but /etc/bytegeist/config.yaml is owned by root with mode 0600, so only root can read it. The service fails at startup with Permission denied on the config file, which is why systemctl reports exit code 1 immediately after start."
+  },
+  "expectedSolution": {
+    "S": "Give the bytegeist service account read access to the config without opening it to the world. Change group ownership to bytegeist and set mode 0640 (for example, chown root:bytegeist /etc/bytegeist/config.yaml && chmod 0640 /etc/bytegeist/config.yaml), then restart the service with systemctl restart bytegeist-web."
+  },
+  "diagnosisKeywords": {
+    "L": [
+      {"S": "permission denied"},
+      {"S": "config.yaml"},
+      {"S": "bytegeist"},
+      {"S": "user"},
+      {"S": "ownership"},
+      {"S": "permissions"},
+      {"S": "cannot read"}
+    ]
+  },
+  "solutionKeywords": {
+    "L": [
+      {"S": "chown"},
+      {"S": "chmod"},
+      {"S": "bytegeist"},
+      {"S": "group"},
+      {"S": "0640"},
+      {"S": "restart"},
+      {"S": "systemctl"}
+    ]
+  },
+  "recommendedCommands": {
+    "L": [
+      {"S": "systemctl status bytegeist-web"},
+      {"S": "journalctl -u bytegeist-web --no-pager -n 20"},
+      {"S": "ls -l /etc/bytegeist/config.yaml"},
+      {"S": "id bytegeist"}
+    ]
+  }
+}
