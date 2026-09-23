@@ -6,6 +6,8 @@ Learners work through realistic support incidents in a simulated terminal, gathe
 
 **Live app:** https://main.dgew3vrz26q4r.amplifyapp.com
 
+**Source:** https://github.com/kcasko/bytegeist-support-lab
+
 **Hackathon category:** Social Good
 **Focus track:** Community
 **Theme:** Education / workforce development
