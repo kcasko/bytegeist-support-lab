@@ -144,7 +144,7 @@ Silent browser demo:
 - [x] Builder Center submission copy prepared
 - [x] App category selected
 - [x] Focus track selected
-- [ ] Add screenshot proving the coding agent was connected to AWS
+- [x] Add screenshot proving the coding agent was connected to AWS
 - [ ] Create/finalize the Builder Center project entry
 - [ ] Submit before October 2, 2026 at 11:59 p.m. PT
 ## Suggested demo flow
