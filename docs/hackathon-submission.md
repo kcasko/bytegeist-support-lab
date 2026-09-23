@@ -25,11 +25,15 @@ Learning IT support is often split into memorizing commands, reading documentati
 ByteGeist Support Lab turns troubleshooting into a repeatable practice loop: receive a ticket, gather evidence, interpret the evidence, form a diagnosis, propose a fix, and review the result.
 ## What I built
 
-The application currently includes three interactive incidents:
+The application includes five interactive incidents:
 
 1. A Windows workstation that can reach the internet but cannot resolve an internal file server.
 2. An Active Directory user who can reach a file server but is missing the security-group membership required for an Accounting share.
 3. An AWS developer who authenticates successfully but receives AccessDenied when listing an S3 bucket because the identity lacks `s3:ListBucket`.
+4. A Linux systemd service that will not stay started because its configuration file is owned by root and unreadable to the service user.
+5. An internal web application that is unreachable even though the EC2 instance is running and the security group is correct — the app service on the host is stopped.
+
+Together these cover Windows networking/DNS, Active Directory and file-share authorization, AWS IAM and S3 resource-level permissions, Linux service and permissions troubleshooting, and layered infrastructure-vs-application reachability on AWS.
 
 Learners investigate each incident in a simulated terminal. Commands produce deterministic scenario outputs instead of touching real production systems.
 
@@ -97,18 +101,21 @@ The final targeted regression tests verified:
 - four hint levels become progressively more useful
 - “Check My Thinking” separately assesses diagnosis and fix
 
-A full smoke pass then ran through all three incidents.
+A full smoke pass then ran through all five incidents.
 
 Each incident successfully completed:
 
 - session creation
 - supported terminal execution
-- AI explanation
+- unsupported-command rejection
+- per-scenario progressive hint ladder (levels 1..4)
+- AI explanation tied to server-recorded evidence
 - diagnosis/fix coaching
 - deterministic scoring
+- learner performance report
 - retry with a fresh session
 
-All three produced **100/100** with the correct investigation path and resolution.
+All five produced **100/100** with the correct investigation path and resolution.
 ## Community impact
 
 The project is aimed at learners trying to move from theory into real troubleshooting practice: students, career changers, home-lab builders, and people preparing for entry-level IT support roles.

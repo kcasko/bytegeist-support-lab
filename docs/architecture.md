@@ -131,13 +131,16 @@ Current Amplify app:
 
 ## Validation status
 
-A live smoke test covered all three current scenarios. Each passed:
+A live smoke test covers all five current scenarios. Each passes:
 
 - session creation
 - supported command execution
+- unsupported-command rejection
+- per-scenario progressive hint ladder (L1..L4)
 - exact evidence explanation
-- diagnosis/fix check
+- diagnosis/fix check (Check My Thinking)
 - 100/100 deterministic score
+- learner performance report
 - fresh retry session
 
-Targeted regressions additionally passed for unsupported evidence, S3 permission correction, and four-level hint progression.
+Targeted regressions additionally verify: unsupported commands never count as evidence, S3 listing guidance requires `s3:ListBucket`, "just tell me the answer" is refused with a named misconception, and fabricated evidence claims are rejected because the coach only accepts server-recorded selections.

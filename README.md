@@ -38,6 +38,10 @@ The AI coach can guide reasoning, explain evidence, correct misconceptions, and 
 | INC-1001 | The Missing File Server | Windows / Networking / DNS | Beginner |
 | INC-1002 | Access Denied | Windows / Active Directory / File Shares | Beginner |
 | INC-1003 | AccessDenied in S3 | AWS / IAM / S3 | Intermediate |
+| INC-1004 | Service Won't Start | Linux / System Administration | Intermediate |
+| INC-1005 | Server Is Up, App Is Down | AWS / Cloud Networking | Intermediate |
+
+Each incident reinforces a distinct troubleshooting concept: DNS vs. general reachability (1001), effective group membership vs. share ACLs (1002), authentication vs. IAM authorization (1003), systemd unit state and permissions (1004), and separating infrastructure reachability from application availability (1005).
 
 ## Screenshots
 
@@ -51,6 +55,10 @@ The AI coach can guide reasoning, explain evidence, correct misconceptions, and 
 ### Incident review
 
 ![ByteGeist 100 out of 100 incident review](docs/screenshots/03-incident-review.png)
+
+### Learner performance report
+
+![ByteGeist learner performance report](docs/screenshots/04-learner-performance-report.png)
 
 A silent browser walkthrough is stored at:
 
@@ -113,26 +121,41 @@ Each incident is scored out of 100:
 
 - Diagnosis: **50 points**
 - Resolution: **30 points**
-- Troubleshooting evidence: **20 points**
+- Troubleshooting evidence: **20 points** (up to 4 recommended supported commands, 5 pts each)
 
-The final AI feedback is layered on top of that deterministic result.
+The final AI feedback is layered on top of that deterministic result. Unsupported commands are never counted as diagnostic evidence.
+
+## Learner Performance Report
+
+After the deterministic score, each session generates a report drawn entirely from the current session's real state:
+
+- **Evidence gathered** — distinct supported simulator commands actually executed.
+- **Tutor guidance** — the highest hint level the learner reached (1..4), sourced from the server session record.
+- **Unsupported attempts** — commands the simulator rejected, shown so the learner can see what was tried but never counted as evidence.
+- **Concepts demonstrated / Areas to reinforce / Misconceptions detected** — populated only from the adaptive tutor state actually recorded during the session; each section hides gracefully when empty.
+- **Next practice option** — surfaces the next scenario from the live queue with one click, wrapping to the first.
+
+The report does not invent learning-state data. Deterministic session metrics are shown separately from adaptive tutor observations, and the wording never implies the AI assigned the score.
 
 ## Validation
 
-The live API was regression-tested after the AI Coach hardening work.
+The live API was regression-tested after every scenario addition.
 
-All three incidents passed a complete smoke test:
+All five incidents pass a complete smoke test:
 
 - session creation
 - supported terminal execution
-- exact-output explanation
-- diagnosis/fix coaching
+- unsupported-command rejection
+- progressive hint ladder (L1..L4, per-scenario)
+- exact-output explanation grounded in server-recorded evidence
+- diagnosis/fix coaching via Check My Thinking
 - deterministic scoring
+- learner performance report
 - fresh-session retry
 
-Each incident produced **100/100** with the correct investigation and resolution.
+Each incident produces **100/100** on the correct investigation and resolution.
 
-Targeted regressions also verified that unsupported commands are not treated as evidence, S3 listing guidance uses `s3:ListBucket`, and level-four hints return complete supported commands.
+Adversarial tests verify: fabricated evidence is rejected with a 400 error (`selected terminal evidence is not part of this server-recorded session`), unsupported commands are never treated as evidence, S3 listing guidance requires `s3:ListBucket`, and confidently-wrong diagnoses are corrected with a named misconception rather than confirmed.
 ## Local development
 
 Requirements:
