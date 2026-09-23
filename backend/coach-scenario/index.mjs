@@ -177,6 +177,22 @@ function buildProgressiveHint(
         ? `Run: ${command}. Use the returned ARN to confirm the calling principal before inspecting that principal's S3 permissions.`
         : "Confirm the calling AWS principal, then inspect that principal's permissions.",
     ],
+    "linux-004": [
+      "Start by separating whether the service is failing to start from whether it is running but misbehaving. What evidence would tell you which of those two situations you are in before inspecting configuration?",
+      "Ask systemd itself what state the unit is in and why it exited. The service manager records the exit code and recent lifecycle events, which will tell you whether the service crashed, refused to start, or was stopped.",
+      "Use the systemctl status command family against the specific unit. That evidence shows the current active state, the last exit code, and enough recent log lines to see whether the failure is at startup or later.",
+      command
+        ? `Run: ${command}. Read the Active state, the ExecStart exit code, and the last few log lines to decide whether the failure is at startup or during operation.`
+        : "Query the systemd unit directly to see its current state and recent exit reason.",
+    ],
+    "cloud-network-005": [
+      "Do not assume this is a networking problem yet. Application unreachability can live at four layers: EC2 instance state, security group rules, network path, or the app itself. What single piece of evidence would let you rule out the top layer first?",
+      "Work down the stack one layer at a time. Before you touch the security group or the app, confirm the instance itself is in the state you expect \u2014 running, healthy, on the IP you are targeting. Evidence from the EC2 control plane answers that without any packets on the wire.",
+      "Use the AWS EC2 describe-instances command family against the specific instance ID. That evidence shows instance state, private IP, and attached security groups, which tells you whether the top layer is healthy before you move down to network reachability and the app.",
+      command
+        ? `Run: ${command}. Confirm State.Name and the attached security groups, then move down the stack toward network reachability and the application service.`
+        : "Query the EC2 control plane for the instance state, then work down toward network reachability and the application.",
+    ],
   };
 
   const ladder = ladders[scenarioId];

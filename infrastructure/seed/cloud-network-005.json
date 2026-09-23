@@ -1,0 +1,101 @@
+{
+  "scenarioId": {
+    "S": "cloud-network-005"
+  },
+  "title": {
+    "S": "Server Is Up, App Is Down"
+  },
+  "ticketNumber": {
+    "S": "INC-1005"
+  },
+  "category": {
+    "S": "AWS / Cloud Networking"
+  },
+  "difficulty": {
+    "S": "Intermediate"
+  },
+  "issue": {
+    "S": "The Growth engineering team says the internal ByteGeist status app at http://10.0.2.25 is unreachable from the ops jumphost. The EC2 instance i-0bytegeist123 is still visible in the console and other apps on the same VPC are fine, so they suspect networking or a security group change."
+  },
+  "objective": {
+    "S": "Investigate reachability layer by layer: EC2 instance state, security group rules, network path, and the application service itself. Identify which layer is actually broken and recommend a fix that matches that layer \u2014 do not blame AWS networking without evidence."
+  },
+  "user": {
+    "M": {
+      "name": {
+        "S": "Marcus Reed"
+      },
+      "username": {
+        "S": "mreed"
+      },
+      "department": {
+        "S": "Growth Engineering"
+      },
+      "computer": {
+        "S": "ops-jumphost-01"
+      }
+    }
+  },
+  "commands": {
+    "M": {
+      "aws ec2 describe-instances --instance-ids i-0bytegeist123": {
+        "S": "{\n    \"Reservations\": [\n        {\n            \"Instances\": [\n                {\n                    \"InstanceId\": \"i-0bytegeist123\",\n                    \"InstanceType\": \"t3.small\",\n                    \"State\": {\n                        \"Code\": 16,\n                        \"Name\": \"running\"\n                    },\n                    \"PrivateIpAddress\": \"10.0.2.25\",\n                    \"VpcId\": \"vpc-bytegeist\",\n                    \"SubnetId\": \"subnet-app-2a\",\n                    \"SecurityGroups\": [\n                        {\n                            \"GroupName\": \"bytegeist-web\",\n                            \"GroupId\": \"sg-bytegeist-web\"\n                        }\n                    ],\n                    \"LaunchTime\": \"2026-09-18T02:41:11Z\"\n                }\n            ]\n        }\n    ]\n}"
+      },
+      "aws ec2 describe-instance-status --instance-ids i-0bytegeist123": {
+        "S": "{\n    \"InstanceStatuses\": [\n        {\n            \"InstanceId\": \"i-0bytegeist123\",\n            \"InstanceState\": {\n                \"Name\": \"running\",\n                \"Code\": 16\n            },\n            \"InstanceStatus\": {\n                \"Status\": \"ok\"\n            },\n            \"SystemStatus\": {\n                \"Status\": \"ok\"\n            }\n        }\n    ]\n}"
+      },
+      "aws ec2 describe-security-groups --group-ids sg-bytegeist-web": {
+        "S": "{\n    \"SecurityGroups\": [\n        {\n            \"GroupId\": \"sg-bytegeist-web\",\n            \"GroupName\": \"bytegeist-web\",\n            \"VpcId\": \"vpc-bytegeist\",\n            \"IpPermissions\": [\n                {\n                    \"IpProtocol\": \"tcp\",\n                    \"FromPort\": 80,\n                    \"ToPort\": 80,\n                    \"IpRanges\": [\n                        {\n                            \"CidrIp\": \"10.0.0.0/16\",\n                            \"Description\": \"internal VPC access to bytegeist-web\"\n                        }\n                    ]\n                },\n                {\n                    \"IpProtocol\": \"tcp\",\n                    \"FromPort\": 22,\n                    \"ToPort\": 22,\n                    \"IpRanges\": [\n                        {\n                            \"CidrIp\": \"10.0.1.0/24\",\n                            \"Description\": \"ops jumphost SSH\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}"
+      },
+      "ping 10.0.2.25": {
+        "S": "PING 10.0.2.25 (10.0.2.25) 56(84) bytes of data.\n64 bytes from 10.0.2.25: icmp_seq=1 ttl=64 time=0.512 ms\n64 bytes from 10.0.2.25: icmp_seq=2 ttl=64 time=0.481 ms\n64 bytes from 10.0.2.25: icmp_seq=3 ttl=64 time=0.503 ms\n\n--- 10.0.2.25 ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss, time 2043ms"
+      },
+      "curl http://10.0.2.25": {
+        "S": "curl: (7) Failed to connect to 10.0.2.25 port 80 after 3 ms: Connection refused"
+      },
+      "systemctl status bytegeist-web": {
+        "S": "\u25cb bytegeist-web.service - ByteGeist status web app\n     Loaded: loaded (/etc/systemd/system/bytegeist-web.service; enabled; preset: enabled)\n     Active: inactive (dead) since Tue 2026-09-22 08:47:19 UTC; 46min ago\n   Duration: 6d 12h 04min\n    Process: 4110 ExecStopPost=/usr/local/bin/bytegeist-web-drain (code=exited, status=0/SUCCESS)\n   Main PID: 4102 (code=exited, status=0/SUCCESS)\n\nSep 22 08:47:19 web-lin-02 systemd[1]: Stopping bytegeist-web.service...\nSep 22 08:47:19 web-lin-02 systemd[1]: bytegeist-web.service: Deactivated successfully.\nSep 22 08:47:19 web-lin-02 systemd[1]: Stopped bytegeist-web.service."
+      },
+      "journalctl -u bytegeist-web --no-pager -n 20": {
+        "S": "Sep 22 08:47:18 web-lin-02 bytegeist-web[4102]: 2026-09-22T08:47:18Z INFO  bytegeist_web: received SIGTERM, draining connections\nSep 22 08:47:19 web-lin-02 bytegeist-web[4102]: 2026-09-22T08:47:19Z INFO  bytegeist_web: shutdown complete\nSep 22 08:47:19 web-lin-02 systemd[1]: Stopping bytegeist-web.service...\nSep 22 08:47:19 web-lin-02 systemd[1]: bytegeist-web.service: Deactivated successfully.\nSep 22 08:47:19 web-lin-02 systemd[1]: Stopped bytegeist-web.service.\n\n-- No entries --"
+      },
+      "ss -tlnp": {
+        "S": "State    Recv-Q   Send-Q     Local Address:Port     Peer Address:Port   Process\nLISTEN   0        128              0.0.0.0:22            0.0.0.0:*           users:((\"sshd\",pid=921,fd=3))"
+      }
+    }
+  },
+  "expectedDiagnosis": {
+    "S": "The EC2 instance is running and healthy, the security group permits TCP 80 from the VPC, and 10.0.2.25 is reachable at the network layer (ping succeeds). HTTP fails with Connection refused because the bytegeist-web service on the instance is stopped \u2014 nothing is listening on port 80. The problem is the application layer, not AWS networking."
+  },
+  "expectedSolution": {
+    "S": "Start the bytegeist-web service on the instance (systemctl start bytegeist-web), verify it stays active and is listening on port 80, and ensure it is enabled so it starts automatically on boot. Do not modify the security group, EC2 instance state, or VPC routing \u2014 those layers are already correct."
+  },
+  "diagnosisKeywords": {
+    "L": [
+      {"S": "service"},
+      {"S": "stopped"},
+      {"S": "bytegeist-web"},
+      {"S": "connection refused"},
+      {"S": "application"},
+      {"S": "not listening"},
+      {"S": "port 80"}
+    ]
+  },
+  "solutionKeywords": {
+    "L": [
+      {"S": "systemctl"},
+      {"S": "start"},
+      {"S": "bytegeist-web"},
+      {"S": "enable"},
+      {"S": "service"}
+    ]
+  },
+  "recommendedCommands": {
+    "L": [
+      {"S": "aws ec2 describe-instances --instance-ids i-0bytegeist123"},
+      {"S": "aws ec2 describe-security-groups --group-ids sg-bytegeist-web"},
+      {"S": "curl http://10.0.2.25"},
+      {"S": "systemctl status bytegeist-web"}
+    ]
+  }
+}
