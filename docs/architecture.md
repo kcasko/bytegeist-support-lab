@@ -2,7 +2,7 @@
 
 ## Production URLs
 
-- Frontend: https://main.dgew3vrz26q4r.amplifyapp.com
+- Frontend: https://supportlab.casko.dev (custom domain) — underlying AWS Amplify: https://main.dgew3vrz26q4r.amplifyapp.com
 - API: https://28rhvoyde7.execute-api.us-east-1.amazonaws.com
 - Region: `us-east-1`
 - CloudFormation stack: `bytegeist-support-lab`

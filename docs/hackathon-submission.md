@@ -6,7 +6,9 @@
 
 ## Live application
 
-https://main.dgew3vrz26q4r.amplifyapp.com
+https://supportlab.casko.dev
+
+Underlying AWS Amplify deployment: https://main.dgew3vrz26q4r.amplifyapp.com
 
 ## Classification
 

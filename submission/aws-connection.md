@@ -4,7 +4,7 @@ This document collects the evidence needed for the AWS Zero to Shipped ship gate
 
 ## Public application
 
-**Live URL:** https://main.dgew3vrz26q4r.amplifyapp.com
+**Live URL:** https://supportlab.casko.dev (custom domain fronting the AWS Amplify deployment below)
 
 The production frontend is hosted by AWS Amplify Hosting.
 

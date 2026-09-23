@@ -4,7 +4,8 @@ ByteGeist Support Lab is an AI-guided IT troubleshooting training platform built
 
 Learners work through realistic support incidents in a simulated terminal, gather evidence, form a diagnosis, propose a fix, and receive adaptive coaching from Amazon Bedrock.
 
-**Live app:** https://main.dgew3vrz26q4r.amplifyapp.com
+**Live app:** https://supportlab.casko.dev  
+**AWS-hosted (Amplify):** https://main.dgew3vrz26q4r.amplifyapp.com
 
 **Source:** https://github.com/kcasko/bytegeist-support-lab
 

@@ -123,6 +123,10 @@ The production frontend was built with Vite and deployed to AWS Amplify Hosting.
 
 Live URL:
 
+https://supportlab.casko.dev
+
+Underlying AWS Amplify deployment:
+
 https://main.dgew3vrz26q4r.amplifyapp.com
 
 The backend runs through the `bytegeist-support-lab` CloudFormation stack in `us-east-1`.

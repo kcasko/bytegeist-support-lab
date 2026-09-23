@@ -6,7 +6,8 @@ Everything a reviewer or the Builder Center form needs, in one folder.
 
 - Project name: **ByteGeist Support Lab**
 - One-liner: AWS-hosted troubleshooting simulator where learners investigate realistic IT incidents and get evidence-grounded, adaptive coaching from Amazon Bedrock. AI teaches; code grades.
-- Live app: https://main.dgew3vrz26q4r.amplifyapp.com
+- Live app: **https://supportlab.casko.dev**
+- AWS-hosted (Amplify) fallback: https://main.dgew3vrz26q4r.amplifyapp.com
 - Source (GitHub): https://github.com/kcasko/bytegeist-support-lab
 - Category: **Social Good**
 - Focus track: **Community**
@@ -37,7 +38,8 @@ Amplify Hosting, API Gateway (HTTP API), Lambda, DynamoDB, Amazon Bedrock (Nova 
 
 - Title: **ByteGeist Support Lab**
 - Tagline: **AI-guided IT troubleshooting practice on AWS. AI teaches; code grades.**
-- Live URL: `https://main.dgew3vrz26q4r.amplifyapp.com`
+- Live URL: `https://supportlab.casko.dev` (custom domain — primary demo link)
+- AWS-hosted (Amplify) fallback: `https://main.dgew3vrz26q4r.amplifyapp.com`
 - Source URL: `https://github.com/kcasko/bytegeist-support-lab`
 - Category: Social Good
 - Focus track: Community
