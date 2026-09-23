@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { BrandMark, HeroArt, CoachMascot } from "./Art.jsx";
-import heroBannerUrl from "./assets/bytegeist-lab-banner.webp";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -738,10 +737,7 @@ function App() {
       <div className="app">
         <AppHeader />
         <main className="app-main" id="main" tabIndex={-1}>
-          <section
-            className="ops-header ops-header--banner"
-            style={{ backgroundImage: `url(${heroBannerUrl})` }}
-          >
+          <section className="ops-header">
             <div className="ops-header-main">
               <p className="ops-eyebrow">
                 <span className="ops-tag">ops</span>
@@ -775,6 +771,9 @@ function App() {
                   </dd>
                 </div>
               </dl>
+            </div>
+            <div className="ops-art">
+              <HeroArt />
             </div>
           </section>
 
