@@ -846,9 +846,11 @@ ${message || "No additional message."}
 `.trim();
 
     const messages =
-      formatCoachHistory(
-        session.coachHistory ?? [],
-      );
+      action === "explain"
+        ? []
+        : formatCoachHistory(
+            session.coachHistory ?? [],
+          );
 
     messages.push({
       role: "user",
