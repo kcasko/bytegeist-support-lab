@@ -23,3 +23,5 @@ Thumbs.db
 
 # AWS credentials
 .aws/
+# Local review/screenshots not for git
+_review/
